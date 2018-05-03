@@ -1,0 +1,133 @@
+// Define datafacer for Shp import: parcels
+/*datafacer Shp {
+	data Shapefile("data/TRAVAIL/SHAPEFILE/SITES/Sites_culi.shp","EPSG:2975")	// RGR92_UTM_zone_40S
+	match Site {
+		id : "ID_SITE"
+		commune : "site"
+		altitude : "altitude"
+		geom : "geom"
+		kl : "KL"
+		
+		
+		}
+}
+*/
+datafacer Shp {
+	data Shapefile("data/TRAVAIL/SHAPEFILE/SITES/elevages_cigal_join_req_min.shp","EPSG:2975")	// RGR92_UTM_zone_40S
+	match Site {
+		id : "OBJECTID"
+		nom : "Nom"
+		altitude : "join_ELEV"
+		geom : "geom"
+		zone_veg : "zone_DAUPI"
+		occsol : "CODE_12"
+		eau_500 : "LENGTH_500"
+		eau_1000 : "LENGTH_100"
+		eau_2000 : "LENGTH_200"
+		presence_animaux : "Presence_a"
+		
+		}
+}
+
+// Define datafacer for Shp import: LocStation
+datafacer ShpStation {
+	data Shapefile("data/TRAVAIL/SHAPEFILE/STATIONS/31Stations.shp","EPSG:2975") /// sous reserve d'utiliser les relevés sur les sites
+	match LocStation {
+		name : "NomStation"
+		numero : "Numero"
+		geom : "geom"
+		altitude : "alt"
+		}
+}
+
+
+
+datafacer ShpHum {
+	data Shapefile ("data/TRAVAIL/SHAPEFILE/STATIONS/Stations_Humidite.shp", "EPSG:2975")
+	match Station_Hum{
+		name : "Nom de sta"
+		numero : "Numero"
+		geom : "geom"
+	}
+}
+
+// Define datafacer for csv import: temperature and rainfall
+datafacer CsvData {
+  data Csvfile("data/TRAVAIL/CSVDATA/METEO/97401540.csv")
+  match DataStation {
+  	numero : "Numero"
+  	dateTXT : "Date"
+  	tempMin : "Tmin"
+  	tempMax : "Tmax"
+    rainMM : "Rain"
+	}
+}
+
+// Definition d'une datafacer pour l'humidité
+datafacer CsvHum {
+	data Csvfile("data/TRAVAIL/CSVDATA/METEO/HUMIDITE/97402240.csv")
+	match CSV_Humidite {
+		numero : "Numero"
+		dateTXT : "Date"
+		hum_min : "Un"
+		hum_max : "Ux"
+		hum_moy : "Um"
+	}
+}
+
+// Define datafacer for kml export
+datafacer KmlOut {
+	//data KmlExport(outputDir + "/"+region + "_serietemporelle.kml")
+	data KmlExport("output/REUNION_serietemporelle.kml")
+	match Site {
+		geom : "geom"
+	}
+}
+
+// Define datafacer for SHP export : toutes les dates
+datafacer ShpOutAllDates {
+	data Shapefile("output/REUNION_serietemporelle.shp","EPSG:2975")
+	match Site {
+		geom : "geom"
+		id: "ID"
+		commune: "Commune"
+		date_begin: "date_debut"
+		//nom_station: "Stat_meteo"
+		//eggs : "oeufs"
+		//larvae : "larves"
+		//pupae : "nymphes"
+		//adults : "adultes"
+		//adults_ov : "adultes_ov"
+		//temperature : "temp"
+		//temperature_grad : "t_grad"	
+		tmoy0_17: "tmoy0-17"	
+		tmoy16_18: "tmoy16-18"
+		tmin0_14: "tmin0-14"
+		tmax0_2: "tmin0-2"
+		tmax0_14: "tmax0-14"
+		tmax1_19: "tmax1-19"
+		tmax_11	: "tmax11"
+		humidite : "humidite"
+		num_station_h : "num_h"
+		id_station_h : "id_h"
+		//prob_imicola : "prob_imicola"
+		imicola : "imicola"
+		eau_500 : "eau_500"
+		eau_1000 : "eau_1000"
+		eau_2000 : "eau_2000"
+	}
+}
+
+datafacer RasterNdvi {
+	data RasterFile ("data/TRAVAIL/IMAGES/T40KCB_NDVI_2016/NDVI", "EPSG:4326")
+	match Ndvi{
+		valeur : "0"
+	}
+}
+
+datafacer RasterMasque {
+	data RasterFile ("data/TRAVAIL/IMAGES/T40KCB_NDVI_2016/SEN2COR_MASKS")//, "EPSG:4326")
+	match Masque {
+		valeur : "0"
+	}
+}

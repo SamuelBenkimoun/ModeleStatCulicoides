@@ -1,0 +1,20 @@
+relation SiteNdvi <Site s, Ndvi n> {
+	interaction setNdvi (){
+		if (n.nuages) {
+		s.ndvi = n.valeur
+		}
+	}
+}
+
+relation MasqueNdvi <Masque m, Ndvi n> {
+	interaction lisibiliteNDVI () {
+		
+		if (m.valeur == 99){
+			n.nuages = true
+		}
+		
+		if (m.valeur != 99){
+			n.nuages = false
+		}
+	}
+}
