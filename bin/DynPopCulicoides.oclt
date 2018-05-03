@@ -33,7 +33,8 @@ let debutCalcul = new Date
   
   //////////// 1) Instanciation des datafacers 
   let shp = new Shp	// le shapefile avec les sites de prelevement
-  let nomDeFichier = inputDirWork + "/SHAPEFILE/SITES/elevages_cigal_join_req_min.shp"
+  //let nomDeFichier = inputDirWork + "/SHAPEFILE/SITES/elevages_cigal_join_req_min.shp"
+  let nomDeFichier = inputDirWork + "/SHAPEFILE/SITES/elevages_req_correct_merge2.shp"  
   shp.setFileName(nomDeFichier)
  
   let shpStation = new ShpStation // le shapefile avec la localisation des stations
@@ -44,6 +45,10 @@ let debutCalcul = new Date
   nomDeFichier = inputDirWork + "/SHAPEFILE/STATIONS/Stations_Humidite.shp"
   shpHum.setFileName (nomDeFichier)
   
+  let shpVent = new ShpVent
+  nomDeFichier = inputDirWork + "/SHAPEFILE/STATIONS/stations_vent_fusion.shp"
+  shpVent.setFileName (nomDeFichier)
+  
   let csvData = new CsvData // le fichier texte (csv) avec les donnees Meteo
   nomDeFichier = inputDirWork + "/CSVDATA/METEO/97404540.csv"
   csvData.setFileName(nomDeFichier)
@@ -52,6 +57,10 @@ let debutCalcul = new Date
   nomDeFichier = inputDirWork + "/CSVDATA/METEO/HUMIDITE/97402240.csv"
   csvHum.setFileName(nomDeFichier)
 
+  let csvVent = new CsvVent
+  nomDeFichier = inputDirWork + "/CSVDATA/METEO/VENT/97405420.csv"
+  csvVent.setFileName(nomDeFichier)
+  
   let csvDataNew = new CsvData // le fichier texte (csv) avec les nouvelles donnees Meteo
   nomDeFichier = inputDirNew + "/97404540.csv"
   csvDataNew.setFileName(nomDeFichier)
@@ -62,24 +71,24 @@ let debutCalcul = new Date
   
   let rasterMasque = new RasterMasque 
   nomDeFichier = inputDirWork + "/IMAGES/T40KCB_NDVI_2016/SEN2COR_MASKS"  
-  //println(rasterMasque.size)
-  //let xx = rasterMasque.readAllMasque()
-  rasterMasque.setFileName(nomDeFichier)
-  //xx.next()
-  
-  //println("xx.size: " + xx.size)
-  /*rasterMasque.setFileName("data")
-  xx.setDirectory("data/TRAVAIL") 
-  rasterMasque.setDirectory(repertoire)//("data/TRAVAIL/IMAGES/T40KCB_NDVI_2016/SEN2COR_MASKS")
-  rasterMasque.next() */
   
   let rasterNdvi = new RasterNdvi
   
   let masqueNdvi = new MasqueNdvi // instanciation de la relation entre une image ndvi et le masque associé
+  let siteNdvi = new SiteNdvi // instanciation de la relation entre l'image ndvi et les sites
+  
+  let grid_1000 = new Grid_1000
+  
+  let grid_Output = new Grid_Output
   
   let kmlout = new KmlOut	// le fichier KML en sortie
   nomDeFichier = outputDir + "/"+region + "_serietemporelle.kml"
   kmlout.setFileName(nomDeFichier)
+  
+  let nomDeDossierTxt = "output/"
+  let nomDeFichierTxt = nomDeDossierTxt.concat("output2016.txt")
+  let ligneDeTexte = "974PL;id; date_debut; logpluie1-2; pluie20; pluie28; rainmoy4_5;rain_8; occsol; animaux; tmoy0_17; tmin0_14; tmax0_14; tmoy16_18; tmoymax0_2; tmax_11; humidite; vent; vent_1; num_h; prob_bol; prob_end; prob_gr; prob_imic; prob_kib; eau_500; eau_1000; eau_2000; ndvi; ndvi_id; coeff_alt"
+  printToFile(nomDeFichierTxt, ligneDeTexte) 
   
   let shpout = new ShpOutAllDates	// le fichier ShapeFile en sortie : toutes les dates
   
@@ -91,18 +100,20 @@ let debutCalcul = new Date
  let lsitetot = shp.readAllSite // La liste des polygones 
  println("shp read ...") 	
  
- 
 // List of meteorological station obtained from the Shapefile datafacer
  let lstation = shpStation.readAllLocStation()
   //println("found "+lstation.size()+" meteorological stations")
  let lstation_hum = shpHum.readAllStation_Hum() 
+ let lstation_vent = shpVent.readAllStation_Vent()
  
  let masque = rasterMasque.readAllMasque()
  let ndvi = rasterNdvi.readAllNdvi()
+ let grid = grid_1000.readAllGrid()
   
 // Read temperature and rainfall data
  fix allMeteoData = new KeyMap<Integer,List<DataStation>>
  fix humData = new KeyMap<Integer,List<CSV_Humidite>>
+ fix ventData = new KeyMap<Integer,List<CSV_Vent>>
   
  let i = 0
  for (s:lstation) {
@@ -130,6 +141,18 @@ let debutCalcul = new Date
   	k = k+1
   	println("taille humData :" + humData.size()) //+", " + humData.get(k).get(0).numero)
   	//println("get(0): " + humData.get(k).get(0).hum_max)
+  }
+  
+  let k2 = 0
+  for (v:lstation_vent){
+  	let nomDeFichierCSV = inputDirWork + "/CSVDATA/METEO/VENT/"+v.numero+".csv"
+  	csvVent.fileName = nomDeFichierCSV
+  	
+  	let Data_Vent = csvVent.readAll()
+  	
+  	ventData.put(k2,Data_Vent)
+  	k2 = k2 + 1
+  	println("k2: " + k2 + "taille ventData : " + ventData.size)
   }
     
   
@@ -165,14 +188,13 @@ let debutCalcul = new Date
  let fin = now.clone
  
  for(sit:lsitetot) {
-    sit.eggs = 1000.0  
-  	sit.larvae = 0.0
-  	sit.pupae = 0.0
-  	sit.adults = 0.0
-  	sit.adults_ov = 0.0
+  	sit.ndvi = 0
+  	sit.seuil_pres = 0.5 // On fixe le seuil de presence d'une espece à une porbabilité du 0.5
+  	sit.vent = 0.0
+  	sit.vent_1 = 0.0 
 //  	sit.rain7 = 0.0
 //  	sit.raincumul7 = 0.0
-//  	sit.rainday7 = 0
+//  	sit.rainday7 = 0  
   
   	
   	// Connect sites to the closest meteo station
@@ -185,6 +207,7 @@ let debutCalcul = new Date
 			sit.num_station=s.numero
 			sit.id_station=i
 			sit.diff_alt=(sit.altitude-s.altitude)
+			sit.gradAlt()
 			//sit.ktminFill(csvData)	
 			//sit.nom_station=s.name
 		} // fin if
@@ -205,6 +228,20 @@ let debutCalcul = new Date
 		k=k+1
 	}
 	
+	sit.dist_station_v = 100000000.0
+	k2 = 0
+	for (v:lstation_vent){
+		let dist = sit.geom.distance(v.geom)
+		if (dist < sit.dist_station_v){
+			sit.dist_station_v = dist
+			sit.num_station_v = v.numero
+			sit.mesure_vent = v.mesure
+			sit.id_station_v = k2
+		}
+		k2=k2+1
+		
+	}
+	
 } // fin boucle for : sites
 
 
@@ -212,8 +249,14 @@ let debutCalcul = new Date
 //println("Simulation start: "+bdate)
   
 let day = 0
-let day_h = 0
+let day_2 = day + 1826 // compte de jour pour les CSV commençant au  01/01/2011
 
+//let siteGrid = new SiteGrid
+//siteGrid.addAllSite(lsitetot)
+//siteGrid.addAllGrid(grid)
+//siteGrid.complete.intersect.connect() 
+//println("grid connected")
+/////siteGrid.intersect.connect() 
 
 //for (day_ : 0..0) {
 while (now.isBefore(edateuser.addDays(1))==true) {
@@ -222,42 +265,49 @@ while (now.isBefore(edateuser.addDays(1))==true) {
 	
 	edateuser.addDays(-1)
 	
-// Connexion entre les images NDVI et le masque nuageux
-
-	if (day == 1){
-		masqueNdvi.connect(masque, ndvi)
-		
-	}
-	if (day < 50) {
-		rasterMasque.next() // On utilise le raster suivant (à condition qu'ils soient bien rangés par odre !!)
-		//rasterMasque.update()
-	}
-		
-	//if (day>=365) {
-	if (now.isAfter(bdateuser)==true) {		
-		test_display = IEEEremainder(day,frequencedisplay)	// pour l'export des donnees apres la premiere annee
-		fin = now.clone
-        fin.addDays(frequencedisplay)
-	}
-	
 	let j=0
 	
-	for (sit:lsitetot) {
-	
+	if (day == 1){
+		masqueNdvi.connect(masque, ndvi)
+		masqueNdvi.lisibiliteNDVI()
+		siteNdvi.connect(ndvi, lsitetot)
+		siteNdvi.setNdvi()
+		//sit.attributionNdvi(lsitetot)
 		
+	}
+	if (day == 77 || day == 87 || day == 97 || day == 107 || day == 117 || day == 147 || day == 157 || day == 167 || day == 177 || day == 187|| day == 197|| day == 207|| day == 217 || day == 228 || day == 237 || day == 247 || day == 257 || day == 267 || day == 277|| day == 287|| day == 297|| day == 317 || day == 327 || day == 337 || day == 347 || day == 357) {
+		rasterMasque.next() // On utilise le raster suivant (à condition qu'ils soient bien rangés par odre !!)
+		rasterMasque.update() // On met à jour les entités contenues dans le datafacer
+		println("masque filename: " + rasterMasque.fileName)
+		rasterNdvi.next()
+		rasterNdvi.update()
+		println("ndvi filename: " + rasterNdvi.fileName)
+		masqueNdvi.connect(masque, ndvi)
+		masqueNdvi.lisibiliteNDVI()
+		println("masque + ndvi ok")
+		//let ndvi2 = ndvi.readAllNdvi(shp)
+		siteNdvi.connect(ndvi, lsitetot)
+		siteNdvi.setNdvi()
+		//sit.attributionNdvi(lsitetot)
+	}
+	
+	for (sit:lsitetot) {
+		
+		println ("..................")
+		println("id: " + sit.id)
 		i = sit.id_station
 		k = sit.id_station_h 
-		///// SOLUTION TEMPORAIRE !!
-		//if (k == 3) {k = 11}
-		//if (k == 6) {k = 6}
-		//if (k == 8) {k = 9}
 		println("stat_h " + sit.id_station_h + " num_stat : " + sit.num_station_h)
+		println("stat_v" + sit.id_station_v)
 		println("day: " + day)
-		//k = toIntExact(sit.num_station_h)
+		
+/////// MISE A JOUR DES VARIABLES METEO
       	
       	// Read temperature of the day
-	  	sit.tmin = allMeteoData.get(i).get(day).tempMin
-	  	sit.tmax = allMeteoData.get(i).get(day).tempMax
+	  	sit.tmin = allMeteoData.get(i).get(day_2).tempMin
+	  	sit.tmin = sit.tmin * sit.coeff_alt
+	  	sit.tmax = allMeteoData.get(i).get(day_2).tempMax
+	  	sit.tmax = sit.tmax * sit.coeff_alt
 	  	/*if (day >= 1826) {
 	  		day_h = day - 1826
 	  		sit.humidite = humData.get(k).get(day_h).hum_moy	  		
@@ -267,79 +317,169 @@ while (now.isBefore(edateuser.addDays(1))==true) {
 	  	sit.humidite = humData.get(sit.id_station_h).get(day).hum_moy
 	  	println("ok")	  	  	  	
   	  	// Read rainfall of the day
-	  	sit.rain = allMeteoData.get(i).get(day).rainMM 
+  	  	
+	  	sit.rain = allMeteoData.get(i).get(day_2).rainMM 
+	  	
+	  	sit.vent = ventData.get(sit.id_station_v).get(day).vent
+	  	
+	  	if (day>1) {
+	  		sit.vent_1 = ventData.get(sit.id_station_v).get(day-1).vent
+	  		println("vent: " + sit.vent_1 )
+	  	}
+	  	
       	if (day>7) {
-      		sit.rain7 = allMeteoData.get(i).get(day-7).rainMM
+      		sit.rain7 = allMeteoData.get(i).get(day_2-7).rainMM
+      	}
+      	
+      	if (day > 2) {
+      		if (allMeteoData.get(i).get(day_2-1).rainMM != 0 || allMeteoData.get(i).get(day_2-2).rainMM != 0){ 
+      			sit.rainlog1_2 = log((allMeteoData.get(i).get(day_2-1).rainMM + allMeteoData.get(i).get(day_2-2).rainMM)/2.0)    		    			
+      		}
+      		
+      		//if (allMeteoData.get(i).get(day-1) == 0 && allMeteoData.get(i).get(day-2) == 0){ 
+      		else {
+      			sit.rainlog1_2 = 0.0 // pour éviter NaN avec la fonction lograithme
+      		}
+      		println("rainlog1_2: "+ sit.rainlog1_2)
+      	}
+      	
+      	
+      	if (day > 8) {
+      		sit.rain_8 = allMeteoData.get(i).get(day_2-8).rainMM
+      	}
+      	
+      	if (day > 20) {
+      		sit.rain_20 = allMeteoData.get(i).get(day_2-20).rainMM
+      	}
+      	
+      	if (day > 28) {
+      		sit.rain_28 = allMeteoData.get(i).get(day_2-28).rainMM
       	}
       	
       	if (day>17){
       		sit.tmoy0_17 = 0.0
       		for (d:0..17) {
-      			sit.tmoy0_17 = sit.tmoy0_17 + ((allMeteoData.get(i).get(day-d).tempMin + allMeteoData.get(i).get(day-d).tempMax)/2)
+      			sit.tmoy0_17 = sit.tmoy0_17 + ((allMeteoData.get(i).get(day_2-d).tempMin + allMeteoData.get(i).get(day_2-d).tempMax)/2)
       		}
       		sit.tmoy0_17 = sit.tmoy0_17 / 18.0
+      		sit.tmoy0_17 = sit.tmoy0_17 * sit.coeff_alt
       	}
       	
       	if (day>18){
       		sit.tmoy16_18 = 0.0
       		for (d:16..18) {
-      			sit.tmoy16_18 = sit.tmoy16_18 + ((allMeteoData.get(i).get(day-d).tempMin + allMeteoData.get(i).get(day-d).tempMax)/2)
+      			sit.tmoy16_18 = sit.tmoy16_18 + ((allMeteoData.get(i).get(day_2-d).tempMin + allMeteoData.get(i).get(day_2-d).tempMax)/2)
       		}
       		sit.tmoy16_18 = sit.tmoy16_18 / 3.0
+      		sit.tmoy16_18 = sit.tmoy16_18 * sit.coeff_alt
       	}
       	
       	if (day>14) { // entre deux captures, intervalle fixé à 14 jours
       		sit.tmin0_14 = sit.tmin
       		for (d:0..14) {
-      			if (allMeteoData.get(i).get(day-d).tempMin < sit.tmin0_14) {
-      				sit.tmin0_14 = allMeteoData.get(i).get(day-d).tempMin
+      			if (allMeteoData.get(i).get(day_2-d).tempMin < sit.tmin0_14) {
+      				sit.tmin0_14 = allMeteoData.get(i).get(day_2-d).tempMin
       			}
-      		}      		
+      		}   
+      		sit.tmin0_14 = sit.tmin0_14*sit.coeff_alt   		
       	}
       	
       	if (day>3) {
-      		sit.tmax0_2 = (sit.tmax + sit.tmin) / 2
+      		sit.tmoymax0_2 = (sit.tmax + sit.tmin) / 2 // temperature MOYENNE maximale entre j et j-2
       		for (d:0..2) {
-      			if (((allMeteoData.get(i).get(day-d).tempMax)+(allMeteoData.get(i).get(day-d).tempMin)/2) > sit.tmax0_2){
-      				sit.tmax0_2 = allMeteoData.get(i).get(day-d).tempMax
+      			if (((allMeteoData.get(i).get(day_2-d).tempMax)+(allMeteoData.get(i).get(day_2-d).tempMin))/2 > sit.tmoymax0_2){
+      				sit.tmoymax0_2 = ((allMeteoData.get(i).get(day_2-d).tempMax)+(allMeteoData.get(i).get(day_2-d).tempMin))/2
       			}
       		}
+      		sit.tmoymax0_2 = sit.tmoymax0_2 * sit.coeff_alt
       	}
       	
       	if (day>14) {
       		sit.tmax0_14 = sit.tmax
       		for (d:0..14) {
-      			if (allMeteoData.get(i).get(day-d).tempMax > sit.tmax0_14){
-      				sit.tmax0_14 = allMeteoData.get(i).get(day-d).tempMax 
+      			if (allMeteoData.get(i).get(day_2-d).tempMax > sit.tmax0_14){
+      				sit.tmax0_14 = allMeteoData.get(i).get(day_2-d).tempMax 
       			}
       		}
+      		sit.tmax0_14 = sit.tmax0_14 * sit.coeff_alt
       	}
       	
       	if (day>19){
       		sit.tmax1_19 = sit.tmax
       		for (d:0..19){
-      			if (allMeteoData.get(i).get(day-d).tempMax > sit.tmax1_19){
-      				sit.tmax1_19 = allMeteoData.get(i).get(day-d).tempMax
+      			if (allMeteoData.get(i).get(day_2-d).tempMax > sit.tmax1_19){
+      				sit.tmax1_19 = allMeteoData.get(i).get(day_2-d).tempMax
       			}
       		}
+      		sit.tmax1_19 = sit.tmax1_19 * sit.coeff_alt
       	}
       	
       	if (day>11){
-      		sit.tmax_11 = allMeteoData.get(i).get(day-11).tempMax 
+      		sit.tmax_11 = allMeteoData.get(i).get(day_2-11).tempMax 
+      		sit.tmax_11 = sit.tmax_11 * sit.coeff_alt
       	}
       	
       	if (day>5) {
-      		sit.rainmoy4_5 = (allMeteoData.get(i).get(day-5).rainMM + allMeteoData.get(i).get(day-4).rainMM)/2
+      		sit.rainmoy4_5 = (allMeteoData.get(i).get(day_2-5).rainMM + allMeteoData.get(i).get(day_2-4).rainMM)/2
       	}
+      	
+      	
   
       	
-      	sit.updateTemp() // Mise a jour de la variable de température
-      	sit.gradientAlt(sit.temperature) // Applique un gradient lié au différentie d'altitude sur la température héritée de la station météo
+      	/**/sit.updateTemp() // Mise a jour de la variable de température
+      	/**/sit.gradientAlt(sit.temperature) // Applique un gradient lié au différentie d'altitude sur la température héritée de la station météo
+      	
+      	// Connexion entre les images NDVI, les masques nuageux et les sites
+      	
+      	if (day == 1){
+		sit.attributionNdvi(lsitetot)		
+		}
+		
+		if (day == 77 || day == 87 || day == 97 || day == 107 || day == 117 || day == 147 || day == 157 || day == 167 || day == 177 || day == 187|| day == 197|| day == 207|| day == 217 || day == 228 || day == 247 || day == 257 || day == 267 || day == 277 || day == 287|| day == 297|| day == 307|| day == 317 || day == 327 || day == 337 || day == 347 || day == 357) {
+		sit.attributionNdvi(lsitetot)
+		}
+		
+		sit.fillNdviMap(day,sit.ndvi)
+		
+		if (day > 27){
+			sit.ndvi_26 = sit.ndvi_map.get(day-26)
+		}
+		
+		println("ndvi: " + sit.ndvi + " ndvi_id: " + sit.ndvi_id + "ndvi_25: " + sit.ndvi_26)
+					
+		//if (day>=365) {
+		if (now.isAfter(bdateuser)==true) {		
+		test_display = IEEEremainder(day,frequencedisplay)	// pour l'export des donnees apres la premiere annee
+		fin = now.clone
+        fin.addDays(frequencedisplay)
+		}
+	
+      	
       	//sit.lifeCycleFunctions(sit.temperature_grad)	//Mise a jour des fonctions du modele de dynamique de population
       	//sit.dynPop(dt)		// Resolution des equations
       	sit.calcImicola(sit.temperature)
+      	sit.calcBolitinos()
+      	sit.calcGrahamii()
+      	sit.calcEnderleini()
+      	sit.calcKibatiensis()
       	//sit.ktminFill(csvData)						
       	//sit.get0_30(now)
+      	
+      	ligneDeTexte = sit.pl
+        ligneDeTexte = ligneDeTexte.concat(";"+sit.id.toString+";"+now.toString("dd/MM/yyyy")+";"+sit.rainlog1_2.toString+";"+sit.rain_20.toString+";"+sit.rain_28.toString+";"+sit.rainmoy4_5.toString+";"+sit.rain_8.toString+";"+sit.occsol.toString+";"+sit.presence_animaux.toString+";"+sit.tmoy0_17.toString+";"+sit.tmin0_14.toString+";"+sit.tmax0_14.toString+";"+sit.tmoy16_18.toString+";"+sit.tmoymax0_2.toString+";"+sit.tmax_11.toString+";"+sit.humidite.toString+";"+sit.vent.toString+";"+sit.vent_1.toString+";"+sit.num_station_h.toString+";"+sit.prob_bolitinos.toString+";"+sit.prob_enderleini.toString+";"+sit.prob_grahamii.toString+";"+sit.prob_imicola.toString+";"+sit.prob_kibatiensis.toString+";"+sit.eau_500.toString+";"+sit.eau_1000.toString+";"+sit.eau_2000.toString+";"+sit.ndvi.toString+";"+sit.ndvi_id.toString+";"+sit.coeff_alt) 
+      	printToFile(nomDeFichierTxt, ligneDeTexte) 
+      	
+      	//////FONCTIONS DE CALCUL DES VALEURS DES MAILLES DE LA GRILLE
+      	
+		/*siteGrid.avgProb()
+		
+		for (g:grid){
+			g.date_begin = now.toString("yyyy-MM-dd")
+			println("grid prob_bolitinos: " + g.prob_bolitinos)
+			grid_Output.append(g)
+		}
+	
+      	*/      	
       	      	
       	if (exportKML==true) {
       		sit.classify()
@@ -364,7 +504,10 @@ while (now.isBefore(edateuser.addDays(1))==true) {
      if (now.isAfter(bdateuser)==true) {									
        		if (test_display ==0) {
        			// Creation d'un Shp par date
-       			if (outputAllDates==true) shpout.append(lsitetot)
+       			if (outputAllDates==true) {
+       				println("if ok")
+       				//shpout.append(lsitetot)
+       			}
        		}
      }
      

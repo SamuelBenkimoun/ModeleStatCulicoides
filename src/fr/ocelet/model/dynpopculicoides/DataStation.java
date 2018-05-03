@@ -71,12 +71,11 @@ public class DataStation extends AbstractEntity {
     return getProperty("date");
   }
   
-  public void getDate() {
-    String _dateTXT = this.getDateTXT();
-    Date _fromString = Date.fromString("dd/MM/yyyy", _dateTXT);
-    this.setDate(_fromString);
-  }
-  
+  /**
+   * service getDate () {
+   * date = Date|fromString("dd/MM/yyyy",dateTXT)
+   * }
+   */
   public void getTempMoy() {
     Double _tempMin = this.getTempMin();
     Double _tempMax = this.getTempMax();

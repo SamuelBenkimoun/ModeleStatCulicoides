@@ -11,7 +11,7 @@ import java.util.HashMap;
 @SuppressWarnings("all")
 public class Shp extends Shapefile {
   public Shp() {
-    super("data/TRAVAIL/SHAPEFILE/SITES/elevages_cigal_join_req_min.shp","EPSG:2975");
+    super("data/TRAVAIL/SHAPEFILE/SITES/elevages_req_correct_merge2.shp","EPSG:2975");
   }
   
   public List<Site> readAllSite() {
@@ -31,7 +31,7 @@ public class Shp extends Shapefile {
                       	    Site _entity = new Site();
     _entity.setProperty("id",readInteger("OBJECTID"));
     _entity.setProperty("nom",readString("Nom"));
-    _entity.setProperty("altitude",readInteger("join_ELEV"));
+    _entity.setProperty("altitude",readDouble("join_ELEV"));
     _entity.setProperty("geom",readPoint("geom"));
     _entity.setProperty("zone_veg",readString("zone_DAUPI"));
     _entity.setProperty("occsol",readString("CODE_12"));
@@ -39,6 +39,7 @@ public class Shp extends Shapefile {
     _entity.setProperty("eau_1000",readDouble("LENGTH_100"));
     _entity.setProperty("eau_2000",readDouble("LENGTH_200"));
     _entity.setProperty("presence_animaux",readString("Presence_a"));
+    _entity.setProperty("altitude",readDouble("join_ELEV"));
     return _entity;
   }
   
@@ -46,7 +47,7 @@ public class Shp extends Shapefile {
     HashMap<String, String> hm = new HashMap<String, String>();
     hm.put("OBJECTID","java.lang.Integer");
     hm.put("Nom","java.lang.String");
-    hm.put("join_ELEV","java.lang.Integer");
+    hm.put("join_ELEV","java.lang.Double");
     hm.put("geom","fr.ocelet.runtime.geom.ocltypes.Point");
     hm.put("zone_DAUPI","java.lang.String");
     hm.put("CODE_12","java.lang.String");
@@ -54,6 +55,7 @@ public class Shp extends Shapefile {
     hm.put("LENGTH_100","java.lang.Double");
     hm.put("LENGTH_200","java.lang.Double");
     hm.put("Presence_a","java.lang.String");
+    hm.put("join_ELEV","java.lang.Double");
     return hm;
   }
   
@@ -75,6 +77,7 @@ public class Shp extends Shapefile {
     odr.setAttribute("LENGTH_100",((Site) ety).getEau_1000());
     odr.setAttribute("LENGTH_200",((Site) ety).getEau_2000());
     odr.setAttribute("Presence_a",((Site) ety).getPresence_animaux());
+    odr.setAttribute("join_ELEV",((Site) ety).getAltitude());
     }
     return odr;
   }

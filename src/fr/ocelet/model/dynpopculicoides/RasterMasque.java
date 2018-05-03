@@ -1,48 +1,65 @@
 package fr.ocelet.model.dynpopculicoides;
 
+import com.vividsolutions.jts.geom.Geometry;
 import fr.ocelet.datafacer.ocltypes.RasterFile;
 import fr.ocelet.datafacer.ocltypes.Shapefile;
-import fr.ocelet.runtime.raster.Grid;
+import fr.ocelet.model.dynpopculicoides.Masque;
+import fr.ocelet.runtime.ocltypes.List;
 
 @SuppressWarnings("all")
 public class RasterMasque extends RasterFile {
   public RasterMasque() {
-    super("data/TRAVAIL/IMAGES/T40KCB_NDVI_2016/SEN2COR_MASKS");
+    super("data/TRAVAIL/IMAGES/T40KCB_NDVI_2016/SEN2COR_MASKS","EPSG:2975");
   }
   
-  public Grid readAllMasque() {
-    if(grid == null){
-    	grid = new Grid(getWidth(), getHeight(), getGridGeometry());
-    addProperty("valeur",0);
-                      				Masque entity = new Masque();
-    	createGrid(entity.getProps(), "MasqueGrid");
-    	entity.setNumGrid(fr.ocelet.runtime.raster.GridManager.getInstance().getCurrentIndex());
-    	}
-    return grid;
-  }
-  
-  public Grid readAllMasque(final Integer minX, final Integer minY, final Integer maxX, final Integer maxY) {
-                      			if(grid == null){
-    grid = new Grid(minX, minY, maxX, maxY, getGridGeometry());
-    grid.addProp("valeur","0");
-    Masque entity = new Masque(); 
-    grid.setInitRaster(raster.getRaster(minX, minY, maxX, maxY));
-    grid.setFinalProperties(entity.getProps());
-    grid.setRes(raster);
-    fr.ocelet.runtime.raster.GridManager.getInstance().add(grid);
-    entity.setNumGrid(fr.ocelet.runtime.raster.GridManager.getInstance().getCurrentIndex());
-    }
-    						return grid;
-  }
-  
-  public Grid readAllMasque(final Shapefile shp) {
-    	if(grid == null){
+  public List<Masque> readAllMasque() {
+                      		
+    Masque entity = new Masque();
+    							
     
     addProperty("valeur",0);
-    	Masque entity = new Masque();
-    	this.grid = createGrid(entity.getProps(), shp, 	"MasqueGrid");
-      entity.setNumGrid(fr.ocelet.runtime.raster.GridManager.getInstance().getCurrentIndex());
-    	}
-      return grid;
+    this.grid = createGrid(entity.getProps(), "Masque");
+    
+    
+    
+    
+    entity.getCell().setGrid(grid);
+    List<Masque> entityList = new List<Masque>();
+    entityList.add(entity);
+    							return entityList;
+  }
+  
+  public List<Masque> readAllMasque(final Shapefile shp) {
+    Masque entity = new Masque();
+    
+    
+                      
+    addProperty("valeur",0);
+    this.grid = createGrid(entity.getProps(), shp, 	"Masque");
+                        
+                       
+    
+    entity.getCell().setGrid(grid);
+    					List<Masque> entityList = new List<Masque>();
+    					entityList.add(entity);
+    					return entityList;
+    
+  }
+  
+  public List<Masque> readAllMasque(final Geometry geometry) {
+    Masque entity = new Masque();
+    
+                    
+                      
+    addProperty("valeur",0);
+                      	this.grid = createGrid(entity.getProps(), geometry, 	"Masque");
+                        
+                        entity.updateCellInfo("QUADRILATERAL");
+    
+     entity.getCell().setGrid(grid);
+    					List<Masque> entityList = new List<Masque>();
+    					entityList.add(entity);
+    					return entityList;
+    
   }
 }

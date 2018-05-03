@@ -54,12 +54,6 @@ public class CSV_Humidite extends AbstractEntity {
     return getProperty("hum_max");
   }
   
-  public void getDate() {
-    String _dateTXT = this.getDateTXT();
-    Date _fromString = Date.fromString("dd/MM/yyyy", _dateTXT);
-    this.setDate(_fromString);
-  }
-  
   public CSV_Humidite() {
     super();
     defProperty("numero",new Hproperty<Integer>());

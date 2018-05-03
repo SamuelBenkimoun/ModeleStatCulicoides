@@ -1,8 +1,10 @@
 entity Site {
 	property Integer id
+	property String pl
 	property String commune
-	property Integer altitude	
-	property Integer diff_alt
+	property Double altitude	
+	property Double diff_alt
+	property Double coeff_alt
 	property Integer kl
 	property String nom
 	
@@ -13,6 +15,9 @@ entity Site {
 	property Double eau_1000 // longueur totale des cours d'eau dans un rayon de 1000 metres
 	property Double eau_2000 // longueur totale des cours d'eau dans un rayon de 2000 metres
 	property Integer ndvi // indice de végétation lu dans les rasters
+	property Integer ndvi_id // identifiant du site à partir duquel le ndvi a été inféré si nécessaire
+	property Integer ndvi_26 // indice de végétation à j-26
+	property KeyMap<Integer, Integer> ndvi_map // liste des valeurs de ndvi par date
 	
 	//property MultiPolygon  geom
 	property Point geom // les geometries des sites sont ici symbolisées par des points
@@ -27,37 +32,31 @@ entity Site {
 	property Integer id_station_h // Numero de station mesurant l'humidite la plus proche
 	property Long num_station_h // Numero de station mesurant l'humidite la plus proche
 	
-	property Double eggs //  Nombre d'oeufs
-	property Double larvae // Nombre de larves
-	property Double pupae // Nombre de nymphes
-	property Double adults // Nombre d'adultes (hors ov)
-	property Double adults_ov // Nombre d'adultes en voie de ponte
-	
+	property Double dist_station_v
+	property Integer id_station_v
+	property Long num_station_v
+
+	property Double prob_bolitinos
+	property Double bolitinos
+	property Double prob_enderleini
+	property Double enderleini
+	property Double prob_grahamii
+	property Double grahamii	
 	property Double prob_imicola
 	property Double imicola // Nombre de culicoides imicola apparents sur le site
-	
-	// Les fonctions du modele : varient dans l'espace et le temps
-	property Integer fpon	// fonction de calcul du nombre d'oeufs pondus 
-	property Double fegg	// fonction de transition d'oeufs a larves
-	property Double flarvae	// fonction de transition de larves a nymphes
-	property Double fpupae	// fonction de transition de nymphes a adultes
-	property Double faov	// fonction de transition adultes à adulte_ov
-	property Double fme		// mortalite oeufs
-	property Double fml		// mortalite larves
-	property Double fmp		// mortalite nymphes
-	property Double fma		// mortalite adultes (tous les stades)
-	//property Double fmurma	// mortalite adultes avec mortalite additionnelle (recherche hotes ou site de ponte)
-	//property Double fkl		// capacite de charge de l'environnement larves
+	property Double prob_kibatiensis
+	property Double kibatiensis
+	property Double seuil_pres
 	
 	// Les variables meteorologiques
-	property Double temperature // Temperature du jour
-	property Double temperature_grad // Temperature avec gradient thermique lié à l'altitude
 	property Double rain // Pluie du jour
 	property Double rain7 // Pluie a j-7
 	property Double rainmoy4_5 // Moyenne de la pluie entre j-4 et j-5
+	property Double rainlog1_2 // Log de la moyenne des pluies de la veille et de l'avant veille
+	property Double rain_8 // Quantité de pluie tombée à j-8
+	property Double rain_20 // Quantité de pluie tombée à j-20
+	property Double rain_28 // Quantité de pluie tombée à j-28
 	//property Double raincumul7 // Cumul des pluies sur 7 jours
-	property Double tmin // Temperature min
-	property Double tmax // Temperature max
 	
 	
 	/*service updateVariablesRain () {
@@ -71,16 +70,25 @@ entity Site {
 	property Date date
 	property KeyMap<Date, Double> ktmin
 
+	property Double temperature // Temperature du jour
+	property Double temperature_grad // Temperature avec gradient thermique lié à l'altitude
 	property Double tmoy0_17	
 	property Double tmoy16_18
 	property Double tmin0_14
-	property Double tmax0_2 // temperature moyenne maximale entre j-2 et j0
+	property Double tmoymax0_2 // temperature moyenne maximale entre j-2 et j0
 	property Double tmax0_14
 	property Double tmax1_19
 	property Double tmax_11
-	
+	property Double tmin // Temperature min
+	property Double tmax // Temperature max
+			
 	property Double humidite // humidité du jour
 	
+	property String mesure_vent
+	property Double vent
+	property Double vent_1
+	
+	property Integer voisin_ndvi
 	
 	service updateTemp () {
 		temperature = (tmin + tmax) / 2
@@ -90,6 +98,167 @@ entity Site {
 	
 	service gradientAlt (Double temperature) {
 		temperature_grad = temperature - diff_alt*(6.5/1000)
+	}
+	
+	service gradAlt () {
+		coeff_alt = diff_alt*(6.5/1000) // gradient d'altitude de 6.5° de moins par 1000m d'altitude	
+	}
+	
+	service attributionNdvi (List<Site> ls){ // fonction pour attribuer un ndvi par extrapolation spatiale
+		if (ndvi == (-99999)) { // si le ndvi n'est pas lisible
+			let dist = 100000.0
+			for (l:ls){ // boucle pour trouver le site le plus proche ayant un ndvi lisible
+				if (geom.distance(l.geom) < dist && l.ndvi != (-99999) && l.id != id){
+					dist = geom.distance(l.geom)
+					ndvi = l.ndvi
+					ndvi_id = l.id
+					println("ndvi attributed")
+				}
+			}
+		}
+		else {
+			ndvi_id = 0
+		}
+	}
+	
+	service fillNdviMap (Integer a, Integer b){
+		ndvi_map.put(a,b)
+	}
+	
+	service calcBolitinos (){
+		let class_ndvi = 0.0 // BORNE INFERIEURE A DEFINIR, A PRIORI 2120
+		
+		if (ndvi > 5690 && ndvi < 6650) { 
+			class_ndvi= 0.62374 
+		}
+		
+		if (ndvi > 6650 && ndvi < 7380) {
+			class_ndvi= 0.79835 
+		}
+		
+		if (ndvi > 7380 && ndvi < 7850) {
+			class_ndvi = 0.86642
+		}
+		
+		if (ndvi > 7850) { // BORNE SUPERIEURE A DEFINIR, A PRIORI 9040 
+			class_ndvi = 1.97628
+		}
+		
+		let corine = 0.0 // (végétation clairesemée ??)
+		
+		if (occsol == "2430"){ // agricole avec de larges espaces naturels
+			corine = 2.19826
+		}
+		if (occsol == "2112") { //canne
+			corine = 0.0
+		}
+		if (occsol == "2310"){ // prairie
+			corine = 2.21140
+		}
+		if (occsol == "2420"){ //système de cultures complexe
+			corine = 2.92347
+		}
+		if (occsol == "1120") { // tissu urbain discontinu
+			corine = 5.36079
+		}
+		/*if (occsol == "3330") { // vegetation clairsemee
+			corine = 0.5647 // POUR L'INSTANT PAS PRISE EN COMPTE DANS LE MODELE
+		}*/
+		println("corine :" + corine)
+		
+		let animaux = 0.0 // Si aucun
+		
+		if (presence_animaux == "Intdrieur"){ // pb d'encodage des accents à résoudre pour l'orthographe
+			animaux = 0.19408
+		}
+		if (presence_animaux == "Extdrieur"){ // pb d'encodage des accents à résoudre pour l'orthographe
+			animaux = 0.20025
+		}
+		if (presence_animaux == "Intdrieur & Extirieur" || presence_animaux == "Intdrieur & Exterieur" || presence_animaux == "Intdrieur & Etxnrieur"){ // pb d'encodage des accents à résoudre pour l'orthographe
+			animaux = 1.82176
+		}
+		println("animaux: " + animaux)
+							
+		let p = (-7.51177) + rainlog1_2 * (-0.68293) + tmin0_14 * 0.28132 + corine + animaux
+		prob_bolitinos = (exp(p))/(1+exp(p))
+		
+		println("prob bolitinos: " + prob_bolitinos)
+		
+		if (prob_bolitinos < seuil_pres){
+			bolitinos = 0.0 // seuil de présence/absence fixé à la probabilité de 0.5
+		}
+	}
+	
+	service calcEnderleini () {
+		
+		let class_ndvi = 0.0 // BORNE INFERIEURE A DEFINIR, A PRIORI 2120
+		
+		if (ndvi > 6070 && ndvi < 7690) { 
+			class_ndvi= -1.71775
+		}		
+		
+		if (ndvi > 7690) { // BORNE SUPERIEURE A DEFINIR, A PRIORI 9040 
+			class_ndvi = -0.71894
+		}
+		
+		let animaux = 0.0 // Si aucun ou intérieur
+
+		if (presence_animaux == "Extdrieur"){ // pb d'encodage des accents à résoudre pour l'orthographe
+			animaux = 2.73359
+		}
+		if (presence_animaux == "Intdrieur & Extirieur" || presence_animaux == "Intdrieur & Exterieur" || presence_animaux == "Intdrieur & Etxnrieur"){ // pb d'encodage des accents à résoudre pour l'orthographe
+			animaux = 3.66219
+		}
+		
+		let p = (-24.10444) + tmoy16_18 * 0.49397 + tmoymax0_2 * 0.42819 + humidite * (-0.06037) + rain_20 * 0.06346 + class_ndvi + animaux + eau_500 * 1.36678
+		prob_enderleini = (exp(p))/(1+exp(p))
+		
+		if (prob_enderleini < seuil_pres){
+			enderleini = 0.0
+		}
+	}
+	
+	service calcGrahamii () {
+		
+		let class_ndvi = 0.0 // BORNE INFERIEURE A DEFINIR, A PRIORI 2120
+		
+		if (ndvi > 6070 && ndvi < 7060) { 
+			class_ndvi= 1.32130 
+		}
+		
+		if (ndvi > 7060 && ndvi < 7690) {
+			class_ndvi= 0.83841
+		}
+		
+		if (ndvi > 7690) { // BORNE SUPERIEURE A DEFINIR, A PRIORI 9040 
+			class_ndvi = 1.99477
+		}
+		
+		let corine = 0.0 // (vegetation clairsemée ??)
+		
+		if (occsol == "2430"){ // agricole avec de larges espaces naturels 
+			corine = 0.0
+		}
+		if (occsol == "2112") { //canne
+			corine = 1.46914
+		}
+		if (occsol == "2310"){ // prairie
+			corine = 2.07308
+		}
+		if (occsol == "2420"){ //système de cultures complexe
+			corine = 3.50849
+		}
+		if (occsol == "1120") { // tissu urbain discontinu
+			corine = 4.27313
+		}
+		
+		let p = 2.11346 + tmax_11 * (-0.22395) + humidite * (-0.03525) + rain_28 * 0.03331 + class_ndvi + corine + eau_1000 * 0.27201
+		prob_grahamii = (exp(p))/(1+exp(p))
+		
+		if (prob_grahamii < seuil_pres) {
+			grahamii = 0.0
+		}
+		
 	}
 	
 	service calcImicola (Double temperature){
@@ -110,20 +279,20 @@ entity Site {
 		if (zone_veg == "tamarins") {
 			daupi = 0.0
 		}
-		println ("..................")
+		
 		print("daupi :" + daupi)
 		
 		//let animaux = 0.0
-		let animaux = 2.66738
-		if (presence_animaux == "Intdrieur"){
+		let animaux = 0.0
+		if (presence_animaux == "Intdrieur"){ // pb d'encodage des accents à résoudre pour l'orthographe
 			animaux = 0.75859
 		}
-		if (presence_animaux == "Extdrieur"){
+		if (presence_animaux == "Extdrieur"){ // pb d'encodage des accents à résoudre pour l'orthographe
 			animaux = 2.99492
 		}
-		/*if (presence_animaux == "Interieur & Exterieur"){
+		if (presence_animaux == "Intdrieur & Extirieur" || presence_animaux == "Intdrieur & Exterieur" || presence_animaux == "Intdrieur & Etxnrieur"){ // pb d'encodage des accents à résoudre pour l'orthographe
 			animaux = 2.66738
-		}*/
+		}
 		println("animaux: " + animaux)
 		
 		let corine = 0.0
@@ -155,171 +324,90 @@ entity Site {
 		println ("tmoy0_17: " + tmoy0_17 + "; tmax0_14: " + tmax0_14 + "; humidite : " + humidite + "; rainmoy4_5: " + rainmoy4_5)
 		//let p_exp = exp(p) 
 		prob = (exp(p))/(1+exp(p))
-		//prob_imicola = prob
+		prob_imicola = prob
 		println("prob: " + prob)
-		if (prob < 0.5) {
+		if (prob < seuil_pres) {
 			imicola = 0.0
 		}
-		if (prob >= 0.5) {
+		if (prob >= seuil_pres) {
 			updateTemp()
 			let z = -1.8838 + temperature * 0.0476 + corine + (eau_500)*(-2.0592) + (eau_1000)*1.5144 + (eau_2000)*(-0.2148)
-			println("temperature: " + temperature + "; corine: " + corine + "; eau_500: " + eau_500 + "; eau_1000: " + eau_1000 /1000 + "; eau_2000: " + eau_2000 / 1000)
+			println("temperature: " + temperature + "; corine: " + corine + "; eau_500: " + eau_500 + "; eau_1000: " + eau_1000 + "; eau_2000: " + eau_2000)
 			println("z: " + z)
 			imicola = pow(10,(z-1))
 		}
 	}
-
-	service lifeCycleFunctions (Double temperature_grad) {
-		// Oeufs pondus
-		fpon = 60/2 //sex ratio considéré à 0.5
-		
-		// Developpement des oeufs en larves
-		let duree_el = 0.0375*pow(temperature_grad,2) - 1.9875*temperature_grad + 27.75 // calcul de la duree passee au stade d'oeuf
-		fegg = 1/duree_el
-		// Taux de mortalite des oeufs
-		/*fme = 1-(-1.3033*(pow(temperature_grad,2) + 60.31 * temperature_grad - 610.77)/100)
-		if (fme>0.90){
-			fme=0.90
-		}*/
-		if (temperature_grad<25){
-			fme = (-0.2141*pow(temperature_grad ,2) + 6.9271*temperature_grad - 19.045)/100
-		}
-		if (temperature_grad >25){
-			fme = (0.3*pow(temperature_grad,2) - 17.5*temperature_grad + 270.0)/100
-		}
-		if (fme > 1.0) {
-			fme = 1.0
-		}
-		if (fme < 0.10) {
-			fme = 0.10
-		}
-		// Developpement des larves
-		let duree_lp = 0.0333*pow(temperature_grad,2) - 2.6*temperature_grad + 54.667 // calcul de la duree passe au stade de larve
-		flarvae = 1/duree_lp
-		// Taux de mortalite des larves
-//		if (temperature_grad < 25){
-//			fml = (0.2523*pow(temperature_grad,2)  - 13.515*temperature_grad + 190.03)/100	
-//		}
-//	
-//		if (temperature_grad > 25){
-//			fml = (-0.6*pow(temperature_grad,2) + 37*temperature_grad - 540.0)/100
-//		}
-		fml = -0.0002*(pow(temperature_grad,3)) + 0.0172*(pow(temperature_grad,2)) -0.4991*temperature_grad + 4.8875
-		
-		if (fml > 1.0) {
-			fml = 1.0
-		}
-//		
-//		if (temperature_grad>42){
-//		fml = 1.0
-//		}
-		
-		if (fml < 0.10) {
-			fml = 0.10
-		}
-		// Developpement des nymphes en adultes
-		//fpupae = 0.0083*pow(temperature_grad,2)-0.475*temperature_grad+9.1667
-/// MODIF 
-		fpupae = 1/(0.0083*pow(temperature_grad,2)-0.475*temperature_grad+9.1667)
-		
-		// Taux de mortalité des nymphes 
-		//fmp = (0.0028 *pow(temperature_grad,3) - 0.1916*pow(temperature_grad,2)+ 4.2119*temperature_grad - 26.591)/100
-		fmp = 0.0012*(pow(temperature_grad,2))-0.0627*(temperature_grad)+0.8539
-//		if (fmp < 0.01) {
-//			fmp = 0.01
-//		}
-		
-		if (fmp > 1) {
-			fmp = 1.0
-		}
-		
-		// Passage d'adulte à adulte en oviposition
-		let cycle_gon = 0.6208*pow(temperature_grad,2) - 31.738 * temperature_grad + 409.42
-		faov = 1/cycle_gon
 	
-
-		//Taux de mortalité des adultes
-		//let duree_vie = 0.0
-		//fma = -0.0009*(temperature_grad * temperature_grad) + 0.0352 * temperature_grad + 0.6117
-/// MODIF 
-		if (temperature_grad < 15) {
-			fma = -0.002*pow(temperature_grad,2) + 0.0727 * temperature_grad + 0.3232
-			fma = 1 -fma
-			
+	service calcKibatiensis () {
+		
+		let tmin_qual = 0.0 // BORNE INFERIEURE A -1.5°
+		if (tmax0_14 > 8.46 && tmax0_14 < 12.2) {
+			tmin_qual  = 1.9955767
+		} 
+		if (tmax0_14 > 12.2 && tmax0_14 < 16.0) {
+			tmin_qual = 0.2488846
 		}
-		if (temperature_grad > 15 && temperature_grad < 35) {
-			fma = 0.0002*pow(temperature_grad,2) - 0.016 * temperature_grad + 1.155
-			fma = 1 -fma
+		if (tmax0_14 > 16.0 && tmax0_14 < 18.9) {
+			tmin_qual = 0.5042979
 		}
-		if (temperature_grad > 35) {
-			fma = -0.0068*pow(temperature_grad,2) + 0.4054 * temperature_grad - 4.9906
-			fma = 1 -fma
-		}
-		if (fma > 0.99){
-			fma = 0.99
-		}
-		if (fma < 0.0) {
-			fma = 0.0
+		if (tmax0_14 > 18.9) {
+			tmin_qual = (-0.8201423) // BORNE SUPERIEUR A 25.1°
 		}
 		
-	} // Fin service updateFunctions
-	
-	service dynPop (Double dt) {
-		let npastemps = round(1/dt).intValue()
+		let corine = 0.0 // (végétation clairesemée ??)
 		
-		// initialisation
-		let x1 = eggs
-		let x2 = larvae
-		let x3 = pupae
-		let x4 = adults
-		let x5 = adults_ov
-		
-		let k1 = 0.0
- 		let l1 = 0.0
-		let m1 = 0.0
-		let n1 = 0.0
-		let o1 = 0.0  
-		
-				// Resolution des equations
-		for (y : 1..npastemps) {
-			
-		// MODIF lignes k1 l1 m1
-					
-			k1 = x5 * fpon - x1 * fegg - x1 * fme
-			//l1 = x1 * fegg - x2 * flarvae - x2 * fml
-			l1 = x1 * fegg - x2 * flarvae - x2 * fml * (1+x2/kl) // si introduction capacite de charge
-			m1 = x2 * flarvae - x3 * fpupae - x3 * fmp
-		//MODIF pupae -> fpupae
-			n1 = x3 * fpupae - x4 * faov - x4 * fma + x5 
-			o1 = x4 * faov - x5
-			
-			let k = x1+ dt * k1
-			let l = x2+ dt * l1
-			let m = x3+ dt * m1
-			let n = x4+ dt * n1
-			let o = x5+ dt * o1
-			
-			x1 = k
-			x2 = l
-			x3 = m
-			x4 = n
-			x5 = o		
+		if (occsol == "2430"){ // agricole avec de larges espaces naturels
+			corine = 1.4202163
+		}
+		if (occsol == "2112") { //canne
+			corine = 0.0
+		}
+		if (occsol == "2310"){ // prairie
+			corine = 3.0061298
+		}
+		if (occsol == "2420"){ //système de cultures complexe
+			corine = 1.5044477
+		}
+		if (occsol == "1120") { // tissu urbain discontinu
+			corine = 3.2433749
 		}
 		
-		eggs = x1
-  		larvae = x2
-  		pupae = x3
-  		adults = x4
-  		adults_ov = x5
+		let pluie = 0.0
+		if (rain > 0.0) {
+			pluie = 0.8705422
+		}
 		
+		let wind_1 = 0.0
+		if (((vent_1 < 0.28) && (mesure_vent == "2")) || ((vent_1 < 2.60) && (mesure_vent == "10"))) {
+			wind_1 = 0.0
+		} 
+		if (((vent_1 > 0.28) && (vent_1 < 0.97) && (mesure_vent == "2")) || ((vent_1 > 2.60) && (vent_1 < 5.80) &&(mesure_vent == "10"))) {
+			wind_1 = (-0.7224247)
+		}
+		if (((vent_1 > 0.97) && (vent_1 < 1.66) && (mesure_vent == "2")) || ((vent_1 > 5.80) && (vent_1 < 8.99) &&(mesure_vent == "10"))) {
+			wind_1 = (-1.5564980)
+		}
+		if (((vent_1 > 1.66) && (mesure_vent == "2"))|| ((vent_1 > 8.99) &&(mesure_vent == "10"))) {
+			wind_1 = (-0.0513435)
+		}
+		
+		let wind = 0.0
+		if (((vent < 0.28) && (mesure_vent == "2")) || ((vent < 2.60) && (mesure_vent == "10"))) {
+			wind = 0.0
+		}
+		if (((vent > 0.28) && (vent < 0.97) && (mesure_vent == "2")) || ((vent > 2.60) && (vent < 5.80) &&(mesure_vent == "10"))) {
+			wind = 0.2876684
+		}
+		if (((vent > 0.97) && (mesure_vent == "2")) || ((vent > 5.80) && (mesure_vent == "10"))) {
+			wind = (-0.86293340)
+		}
+		
+		let p = (-2.8243244) + tmin_qual + humidite * (-0.0394085) + rain_8 * 0.0953447 + pluie + wind + wind_1 + ndvi_26 * 0.0005190 + corine + eau_500 * 0.6277210 
+		prob_kibatiensis= (exp(p))/(1+exp(p))
 	}
 	
 		service classify() {	// Classification en fonction de la quantite d'adultes estimee 
-		if (adults < 50) {classCuli = 1}
-		if (adults >= 50 && adults<100) {classCuli = 2}
-		if (adults >= 100 && adults<200) {classCuli = 3}
-		if (adults >= 200 && adults<300) {classCuli = 4}
-		if (adults >= 300) {classCuli = 5}
+		if (prob_bolitinos < 0.50) {classCuli = 1}
 		}
 		
 		service outputKml (Integer day, Date now, Integer frequencedisplay, KmlExport kml) {
@@ -342,9 +430,9 @@ entity DataStation {			// le fichier texte contenant les donnees meteorologiques
   property Double rainMM
   property Date date 
   
- service getDate () {
+ /*service getDate () {
   	date = Date|fromString("dd/MM/yyyy",dateTXT)	
-  }
+  }*/
   
   
  service getTempMoy () {
@@ -361,9 +449,15 @@ entity CSV_Humidite {
 	property Double hum_moy
 	property Double hum_max
 	
- service getDate () {
+/*  service getDate () {
   	date = Date|fromString("dd/MM/yyyy",dateTXT)	
-  }
+  }*/
+}
+
+entity CSV_Vent {
+	property Integer numero
+	//property String dateTXT
+	property Double vent
 }
 
 entity LocStation {			// la localisation des stations meteorologiques
@@ -382,6 +476,14 @@ entity Station_Hum {
 	property Point geom
 } 
 
+entity Station_Vent {
+	property String name
+	property Integer id
+	property Long numero
+	property String mesure
+	property Point geom
+}
+
 entity Ndvi {
 	property Cell cell
 	property Integer valeur
@@ -391,4 +493,17 @@ entity Ndvi {
 entity Masque {
 	property Cell cell
 	property Integer valeur
+}
+
+entity Grid {
+	property MultiPolygon geom
+	property String date_begin
+	property Integer id
+	property Integer sites
+	property Double prob_bolitinos
+	property Double prob_enderleini
+	property Double prob_grahamii
+	property Double prob_imicola
+	property Double prob_kibatiensis
+	property Double imicola
 }

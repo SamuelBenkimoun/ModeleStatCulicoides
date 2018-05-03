@@ -7,9 +7,9 @@ import fr.ocelet.runtime.entity.Hproperty;
 import fr.ocelet.runtime.geom.ocltypes.Point;
 import fr.ocelet.runtime.ocltypes.Date;
 import fr.ocelet.runtime.ocltypes.KeyMap;
+import fr.ocelet.runtime.ocltypes.List;
 import org.eclipse.xtext.xbase.lib.DoubleExtensions;
 import org.eclipse.xtext.xbase.lib.InputOutput;
-import org.eclipse.xtext.xbase.lib.IntegerRange;
 
 @SuppressWarnings("all")
 public class Site extends AbstractEntity {
@@ -21,6 +21,14 @@ public class Site extends AbstractEntity {
     return getProperty("id");
   }
   
+  public void setPl(final String pl) {
+    setProperty("pl",pl);
+  }
+  
+  public String getPl() {
+    return getProperty("pl");
+  }
+  
   public void setCommune(final String commune) {
     setProperty("commune",commune);
   }
@@ -29,20 +37,28 @@ public class Site extends AbstractEntity {
     return getProperty("commune");
   }
   
-  public void setAltitude(final Integer altitude) {
+  public void setAltitude(final Double altitude) {
     setProperty("altitude",altitude);
   }
   
-  public Integer getAltitude() {
+  public Double getAltitude() {
     return getProperty("altitude");
   }
   
-  public void setDiff_alt(final Integer diff_alt) {
+  public void setDiff_alt(final Double diff_alt) {
     setProperty("diff_alt",diff_alt);
   }
   
-  public Integer getDiff_alt() {
+  public Double getDiff_alt() {
     return getProperty("diff_alt");
+  }
+  
+  public void setCoeff_alt(final Double coeff_alt) {
+    setProperty("coeff_alt",coeff_alt);
+  }
+  
+  public Double getCoeff_alt() {
+    return getProperty("coeff_alt");
   }
   
   public void setKl(final Integer kl) {
@@ -115,6 +131,30 @@ public class Site extends AbstractEntity {
   
   public Integer getNdvi() {
     return getProperty("ndvi");
+  }
+  
+  public void setNdvi_id(final Integer ndvi_id) {
+    setProperty("ndvi_id",ndvi_id);
+  }
+  
+  public Integer getNdvi_id() {
+    return getProperty("ndvi_id");
+  }
+  
+  public void setNdvi_26(final Integer ndvi_26) {
+    setProperty("ndvi_26",ndvi_26);
+  }
+  
+  public Integer getNdvi_26() {
+    return getProperty("ndvi_26");
+  }
+  
+  public void setNdvi_map(final KeyMap<Integer, Integer> ndvi_map) {
+    setProperty("ndvi_map",ndvi_map);
+  }
+  
+  public KeyMap<Integer, Integer> getNdvi_map() {
+    return getProperty("ndvi_map");
   }
   
   public void setGeom(final Point geom) {
@@ -197,44 +237,76 @@ public class Site extends AbstractEntity {
     return getProperty("num_station_h");
   }
   
-  public void setEggs(final Double eggs) {
-    setProperty("eggs",eggs);
+  public void setDist_station_v(final Double dist_station_v) {
+    setProperty("dist_station_v",dist_station_v);
   }
   
-  public Double getEggs() {
-    return getProperty("eggs");
+  public Double getDist_station_v() {
+    return getProperty("dist_station_v");
   }
   
-  public void setLarvae(final Double larvae) {
-    setProperty("larvae",larvae);
+  public void setId_station_v(final Integer id_station_v) {
+    setProperty("id_station_v",id_station_v);
   }
   
-  public Double getLarvae() {
-    return getProperty("larvae");
+  public Integer getId_station_v() {
+    return getProperty("id_station_v");
   }
   
-  public void setPupae(final Double pupae) {
-    setProperty("pupae",pupae);
+  public void setNum_station_v(final Long num_station_v) {
+    setProperty("num_station_v",num_station_v);
   }
   
-  public Double getPupae() {
-    return getProperty("pupae");
+  public Long getNum_station_v() {
+    return getProperty("num_station_v");
   }
   
-  public void setAdults(final Double adults) {
-    setProperty("adults",adults);
+  public void setProb_bolitinos(final Double prob_bolitinos) {
+    setProperty("prob_bolitinos",prob_bolitinos);
   }
   
-  public Double getAdults() {
-    return getProperty("adults");
+  public Double getProb_bolitinos() {
+    return getProperty("prob_bolitinos");
   }
   
-  public void setAdults_ov(final Double adults_ov) {
-    setProperty("adults_ov",adults_ov);
+  public void setBolitinos(final Double bolitinos) {
+    setProperty("bolitinos",bolitinos);
   }
   
-  public Double getAdults_ov() {
-    return getProperty("adults_ov");
+  public Double getBolitinos() {
+    return getProperty("bolitinos");
+  }
+  
+  public void setProb_enderleini(final Double prob_enderleini) {
+    setProperty("prob_enderleini",prob_enderleini);
+  }
+  
+  public Double getProb_enderleini() {
+    return getProperty("prob_enderleini");
+  }
+  
+  public void setEnderleini(final Double enderleini) {
+    setProperty("enderleini",enderleini);
+  }
+  
+  public Double getEnderleini() {
+    return getProperty("enderleini");
+  }
+  
+  public void setProb_grahamii(final Double prob_grahamii) {
+    setProperty("prob_grahamii",prob_grahamii);
+  }
+  
+  public Double getProb_grahamii() {
+    return getProperty("prob_grahamii");
+  }
+  
+  public void setGrahamii(final Double grahamii) {
+    setProperty("grahamii",grahamii);
+  }
+  
+  public Double getGrahamii() {
+    return getProperty("grahamii");
   }
   
   public void setProb_imicola(final Double prob_imicola) {
@@ -253,92 +325,28 @@ public class Site extends AbstractEntity {
     return getProperty("imicola");
   }
   
-  public void setFpon(final Integer fpon) {
-    setProperty("fpon",fpon);
+  public void setProb_kibatiensis(final Double prob_kibatiensis) {
+    setProperty("prob_kibatiensis",prob_kibatiensis);
   }
   
-  public Integer getFpon() {
-    return getProperty("fpon");
+  public Double getProb_kibatiensis() {
+    return getProperty("prob_kibatiensis");
   }
   
-  public void setFegg(final Double fegg) {
-    setProperty("fegg",fegg);
+  public void setKibatiensis(final Double kibatiensis) {
+    setProperty("kibatiensis",kibatiensis);
   }
   
-  public Double getFegg() {
-    return getProperty("fegg");
+  public Double getKibatiensis() {
+    return getProperty("kibatiensis");
   }
   
-  public void setFlarvae(final Double flarvae) {
-    setProperty("flarvae",flarvae);
+  public void setSeuil_pres(final Double seuil_pres) {
+    setProperty("seuil_pres",seuil_pres);
   }
   
-  public Double getFlarvae() {
-    return getProperty("flarvae");
-  }
-  
-  public void setFpupae(final Double fpupae) {
-    setProperty("fpupae",fpupae);
-  }
-  
-  public Double getFpupae() {
-    return getProperty("fpupae");
-  }
-  
-  public void setFaov(final Double faov) {
-    setProperty("faov",faov);
-  }
-  
-  public Double getFaov() {
-    return getProperty("faov");
-  }
-  
-  public void setFme(final Double fme) {
-    setProperty("fme",fme);
-  }
-  
-  public Double getFme() {
-    return getProperty("fme");
-  }
-  
-  public void setFml(final Double fml) {
-    setProperty("fml",fml);
-  }
-  
-  public Double getFml() {
-    return getProperty("fml");
-  }
-  
-  public void setFmp(final Double fmp) {
-    setProperty("fmp",fmp);
-  }
-  
-  public Double getFmp() {
-    return getProperty("fmp");
-  }
-  
-  public void setFma(final Double fma) {
-    setProperty("fma",fma);
-  }
-  
-  public Double getFma() {
-    return getProperty("fma");
-  }
-  
-  public void setTemperature(final Double temperature) {
-    setProperty("temperature",temperature);
-  }
-  
-  public Double getTemperature() {
-    return getProperty("temperature");
-  }
-  
-  public void setTemperature_grad(final Double temperature_grad) {
-    setProperty("temperature_grad",temperature_grad);
-  }
-  
-  public Double getTemperature_grad() {
-    return getProperty("temperature_grad");
+  public Double getSeuil_pres() {
+    return getProperty("seuil_pres");
   }
   
   public void setRain(final Double rain) {
@@ -365,20 +373,36 @@ public class Site extends AbstractEntity {
     return getProperty("rainmoy4_5");
   }
   
-  public void setTmin(final Double tmin) {
-    setProperty("tmin",tmin);
+  public void setRainlog1_2(final Double rainlog1_2) {
+    setProperty("rainlog1_2",rainlog1_2);
   }
   
-  public Double getTmin() {
-    return getProperty("tmin");
+  public Double getRainlog1_2() {
+    return getProperty("rainlog1_2");
   }
   
-  public void setTmax(final Double tmax) {
-    setProperty("tmax",tmax);
+  public void setRain_8(final Double rain_8) {
+    setProperty("rain_8",rain_8);
   }
   
-  public Double getTmax() {
-    return getProperty("tmax");
+  public Double getRain_8() {
+    return getProperty("rain_8");
+  }
+  
+  public void setRain_20(final Double rain_20) {
+    setProperty("rain_20",rain_20);
+  }
+  
+  public Double getRain_20() {
+    return getProperty("rain_20");
+  }
+  
+  public void setRain_28(final Double rain_28) {
+    setProperty("rain_28",rain_28);
+  }
+  
+  public Double getRain_28() {
+    return getProperty("rain_28");
   }
   
   /**
@@ -415,6 +439,22 @@ public class Site extends AbstractEntity {
     return getProperty("ktmin");
   }
   
+  public void setTemperature(final Double temperature) {
+    setProperty("temperature",temperature);
+  }
+  
+  public Double getTemperature() {
+    return getProperty("temperature");
+  }
+  
+  public void setTemperature_grad(final Double temperature_grad) {
+    setProperty("temperature_grad",temperature_grad);
+  }
+  
+  public Double getTemperature_grad() {
+    return getProperty("temperature_grad");
+  }
+  
   public void setTmoy0_17(final Double tmoy0_17) {
     setProperty("tmoy0_17",tmoy0_17);
   }
@@ -439,12 +479,12 @@ public class Site extends AbstractEntity {
     return getProperty("tmin0_14");
   }
   
-  public void setTmax0_2(final Double tmax0_2) {
-    setProperty("tmax0_2",tmax0_2);
+  public void setTmoymax0_2(final Double tmoymax0_2) {
+    setProperty("tmoymax0_2",tmoymax0_2);
   }
   
-  public Double getTmax0_2() {
-    return getProperty("tmax0_2");
+  public Double getTmoymax0_2() {
+    return getProperty("tmoymax0_2");
   }
   
   public void setTmax0_14(final Double tmax0_14) {
@@ -471,12 +511,60 @@ public class Site extends AbstractEntity {
     return getProperty("tmax_11");
   }
   
+  public void setTmin(final Double tmin) {
+    setProperty("tmin",tmin);
+  }
+  
+  public Double getTmin() {
+    return getProperty("tmin");
+  }
+  
+  public void setTmax(final Double tmax) {
+    setProperty("tmax",tmax);
+  }
+  
+  public Double getTmax() {
+    return getProperty("tmax");
+  }
+  
   public void setHumidite(final Double humidite) {
     setProperty("humidite",humidite);
   }
   
   public Double getHumidite() {
     return getProperty("humidite");
+  }
+  
+  public void setMesure_vent(final String mesure_vent) {
+    setProperty("mesure_vent",mesure_vent);
+  }
+  
+  public String getMesure_vent() {
+    return getProperty("mesure_vent");
+  }
+  
+  public void setVent(final Double vent) {
+    setProperty("vent",vent);
+  }
+  
+  public Double getVent() {
+    return getProperty("vent");
+  }
+  
+  public void setVent_1(final Double vent_1) {
+    setProperty("vent_1",vent_1);
+  }
+  
+  public Double getVent_1() {
+    return getProperty("vent_1");
+  }
+  
+  public void setVoisin_ndvi(final Integer voisin_ndvi) {
+    setProperty("voisin_ndvi",voisin_ndvi);
+  }
+  
+  public Integer getVoisin_ndvi() {
+    return getProperty("voisin_ndvi");
   }
   
   public void updateTemp() {
@@ -488,10 +576,235 @@ public class Site extends AbstractEntity {
   }
   
   public void gradientAlt(final Double temperature) {
-    Integer _diff_alt = this.getDiff_alt();
-    double _multiply = ((_diff_alt).intValue() * (6.5 / 1000));
+    Double _diff_alt = this.getDiff_alt();
+    double _multiply = ((_diff_alt).doubleValue() * (6.5 / 1000));
     double _minus = ((temperature).doubleValue() - _multiply);
     this.setTemperature_grad(Double.valueOf(_minus));
+  }
+  
+  public void gradAlt() {
+    Double _diff_alt = this.getDiff_alt();
+    double _multiply = ((_diff_alt).doubleValue() * (6.5 / 1000));
+    this.setCoeff_alt(Double.valueOf(_multiply));
+  }
+  
+  public void attributionNdvi(final List<Site> ls) {
+    Integer _ndvi = this.getNdvi();
+    boolean _equals = ((_ndvi).intValue() == (-99999));
+    if (_equals) {
+      double dist = 100000.0;
+      for (final Site l : ls) {
+        if ((((this.getGeom().distance(l.getGeom()) < dist) && ((l.getNdvi()).intValue() != (-99999))) && (!Objects.equal(l.getId(), this.getId())))) {
+          dist = this.getGeom().distance(l.getGeom());
+          this.setNdvi(l.getNdvi());
+          this.setNdvi_id(l.getId());
+          InputOutput.<String>println("ndvi attributed");
+        }
+      }
+    } else {
+      this.setNdvi_id(Integer.valueOf(0));
+    }
+  }
+  
+  public void fillNdviMap(final Integer a, final Integer b) {
+    this.getNdvi_map().put(a, b);
+  }
+  
+  public void calcBolitinos() {
+    double class_ndvi = 0.0;
+    if ((((this.getNdvi()).intValue() > 5690) && ((this.getNdvi()).intValue() < 6650))) {
+      class_ndvi = 0.62374;
+    }
+    if ((((this.getNdvi()).intValue() > 6650) && ((this.getNdvi()).intValue() < 7380))) {
+      class_ndvi = 0.79835;
+    }
+    if ((((this.getNdvi()).intValue() > 7380) && ((this.getNdvi()).intValue() < 7850))) {
+      class_ndvi = 0.86642;
+    }
+    Integer _ndvi = this.getNdvi();
+    boolean _greaterThan = ((_ndvi).intValue() > 7850);
+    if (_greaterThan) {
+      class_ndvi = 1.97628;
+    }
+    double corine = 0.0;
+    String _occsol = this.getOccsol();
+    boolean _equals = Objects.equal(_occsol, "2430");
+    if (_equals) {
+      corine = 2.19826;
+    }
+    String _occsol_1 = this.getOccsol();
+    boolean _equals_1 = Objects.equal(_occsol_1, "2112");
+    if (_equals_1) {
+      corine = 0.0;
+    }
+    String _occsol_2 = this.getOccsol();
+    boolean _equals_2 = Objects.equal(_occsol_2, "2310");
+    if (_equals_2) {
+      corine = 2.21140;
+    }
+    String _occsol_3 = this.getOccsol();
+    boolean _equals_3 = Objects.equal(_occsol_3, "2420");
+    if (_equals_3) {
+      corine = 2.92347;
+    }
+    String _occsol_4 = this.getOccsol();
+    boolean _equals_4 = Objects.equal(_occsol_4, "1120");
+    if (_equals_4) {
+      corine = 5.36079;
+    }
+    InputOutput.<String>println(("corine :" + Double.valueOf(corine)));
+    double animaux = 0.0;
+    String _presence_animaux = this.getPresence_animaux();
+    boolean _equals_5 = Objects.equal(_presence_animaux, "Intdrieur");
+    if (_equals_5) {
+      animaux = 0.19408;
+    }
+    String _presence_animaux_1 = this.getPresence_animaux();
+    boolean _equals_6 = Objects.equal(_presence_animaux_1, "Extdrieur");
+    if (_equals_6) {
+      animaux = 0.20025;
+    }
+    if (((Objects.equal(this.getPresence_animaux(), "Intdrieur & Extirieur") || Objects.equal(this.getPresence_animaux(), "Intdrieur & Exterieur")) || Objects.equal(this.getPresence_animaux(), "Intdrieur & Etxnrieur"))) {
+      animaux = 1.82176;
+    }
+    InputOutput.<String>println(("animaux: " + Double.valueOf(animaux)));
+    Double _rainlog1_2 = this.getRainlog1_2();
+    double _multiply = ((_rainlog1_2).doubleValue() * (-0.68293));
+    double _plus = ((-7.51177) + _multiply);
+    Double _tmin0_14 = this.getTmin0_14();
+    double _multiply_1 = ((_tmin0_14).doubleValue() * 0.28132);
+    double _plus_1 = (_plus + _multiply_1);
+    double _plus_2 = (_plus_1 + corine);
+    double p = (_plus_2 + animaux);
+    double _exp = Math.exp(p);
+    double _exp_1 = Math.exp(p);
+    double _plus_3 = (1 + _exp_1);
+    double _divide = (_exp / _plus_3);
+    this.setProb_bolitinos(Double.valueOf(_divide));
+    Double _prob_bolitinos = this.getProb_bolitinos();
+    String _plus_4 = ("prob bolitinos: " + _prob_bolitinos);
+    InputOutput.<String>println(_plus_4);
+    Double _prob_bolitinos_1 = this.getProb_bolitinos();
+    Double _seuil_pres = this.getSeuil_pres();
+    boolean _lessThan = (_prob_bolitinos_1.compareTo(_seuil_pres) < 0);
+    if (_lessThan) {
+      this.setBolitinos(Double.valueOf(0.0));
+    }
+  }
+  
+  public void calcEnderleini() {
+    double class_ndvi = 0.0;
+    if ((((this.getNdvi()).intValue() > 6070) && ((this.getNdvi()).intValue() < 7690))) {
+      class_ndvi = (-1.71775);
+    }
+    Integer _ndvi = this.getNdvi();
+    boolean _greaterThan = ((_ndvi).intValue() > 7690);
+    if (_greaterThan) {
+      class_ndvi = (-0.71894);
+    }
+    double animaux = 0.0;
+    String _presence_animaux = this.getPresence_animaux();
+    boolean _equals = Objects.equal(_presence_animaux, "Extdrieur");
+    if (_equals) {
+      animaux = 2.73359;
+    }
+    if (((Objects.equal(this.getPresence_animaux(), "Intdrieur & Extirieur") || Objects.equal(this.getPresence_animaux(), "Intdrieur & Exterieur")) || Objects.equal(this.getPresence_animaux(), "Intdrieur & Etxnrieur"))) {
+      animaux = 3.66219;
+    }
+    Double _tmoy16_18 = this.getTmoy16_18();
+    double _multiply = ((_tmoy16_18).doubleValue() * 0.49397);
+    double _plus = ((-24.10444) + _multiply);
+    Double _tmoymax0_2 = this.getTmoymax0_2();
+    double _multiply_1 = ((_tmoymax0_2).doubleValue() * 0.42819);
+    double _plus_1 = (_plus + _multiply_1);
+    Double _humidite = this.getHumidite();
+    double _multiply_2 = ((_humidite).doubleValue() * (-0.06037));
+    double _plus_2 = (_plus_1 + _multiply_2);
+    Double _rain_20 = this.getRain_20();
+    double _multiply_3 = ((_rain_20).doubleValue() * 0.06346);
+    double _plus_3 = (_plus_2 + _multiply_3);
+    double _plus_4 = (_plus_3 + class_ndvi);
+    double _plus_5 = (_plus_4 + animaux);
+    Double _eau_500 = this.getEau_500();
+    double _multiply_4 = ((_eau_500).doubleValue() * 1.36678);
+    double p = (_plus_5 + _multiply_4);
+    double _exp = Math.exp(p);
+    double _exp_1 = Math.exp(p);
+    double _plus_6 = (1 + _exp_1);
+    double _divide = (_exp / _plus_6);
+    this.setProb_enderleini(Double.valueOf(_divide));
+    Double _prob_enderleini = this.getProb_enderleini();
+    Double _seuil_pres = this.getSeuil_pres();
+    boolean _lessThan = (_prob_enderleini.compareTo(_seuil_pres) < 0);
+    if (_lessThan) {
+      this.setEnderleini(Double.valueOf(0.0));
+    }
+  }
+  
+  public void calcGrahamii() {
+    double class_ndvi = 0.0;
+    if ((((this.getNdvi()).intValue() > 6070) && ((this.getNdvi()).intValue() < 7060))) {
+      class_ndvi = 1.32130;
+    }
+    if ((((this.getNdvi()).intValue() > 7060) && ((this.getNdvi()).intValue() < 7690))) {
+      class_ndvi = 0.83841;
+    }
+    Integer _ndvi = this.getNdvi();
+    boolean _greaterThan = ((_ndvi).intValue() > 7690);
+    if (_greaterThan) {
+      class_ndvi = 1.99477;
+    }
+    double corine = 0.0;
+    String _occsol = this.getOccsol();
+    boolean _equals = Objects.equal(_occsol, "2430");
+    if (_equals) {
+      corine = 0.0;
+    }
+    String _occsol_1 = this.getOccsol();
+    boolean _equals_1 = Objects.equal(_occsol_1, "2112");
+    if (_equals_1) {
+      corine = 1.46914;
+    }
+    String _occsol_2 = this.getOccsol();
+    boolean _equals_2 = Objects.equal(_occsol_2, "2310");
+    if (_equals_2) {
+      corine = 2.07308;
+    }
+    String _occsol_3 = this.getOccsol();
+    boolean _equals_3 = Objects.equal(_occsol_3, "2420");
+    if (_equals_3) {
+      corine = 3.50849;
+    }
+    String _occsol_4 = this.getOccsol();
+    boolean _equals_4 = Objects.equal(_occsol_4, "1120");
+    if (_equals_4) {
+      corine = 4.27313;
+    }
+    Double _tmax_11 = this.getTmax_11();
+    double _multiply = ((_tmax_11).doubleValue() * (-0.22395));
+    double _plus = (2.11346 + _multiply);
+    Double _humidite = this.getHumidite();
+    double _multiply_1 = ((_humidite).doubleValue() * (-0.03525));
+    double _plus_1 = (_plus + _multiply_1);
+    Double _rain_28 = this.getRain_28();
+    double _multiply_2 = ((_rain_28).doubleValue() * 0.03331);
+    double _plus_2 = (_plus_1 + _multiply_2);
+    double _plus_3 = (_plus_2 + class_ndvi);
+    double _plus_4 = (_plus_3 + corine);
+    Double _eau_1000 = this.getEau_1000();
+    double _multiply_3 = ((_eau_1000).doubleValue() * 0.27201);
+    double p = (_plus_4 + _multiply_3);
+    double _exp = Math.exp(p);
+    double _exp_1 = Math.exp(p);
+    double _plus_5 = (1 + _exp_1);
+    double _divide = (_exp / _plus_5);
+    this.setProb_grahamii(Double.valueOf(_divide));
+    Double _prob_grahamii = this.getProb_grahamii();
+    Double _seuil_pres = this.getSeuil_pres();
+    boolean _lessThan = (_prob_grahamii.compareTo(_seuil_pres) < 0);
+    if (_lessThan) {
+      this.setGrahamii(Double.valueOf(0.0));
+    }
   }
   
   public void calcImicola(final Double temperature) {
@@ -521,9 +834,8 @@ public class Site extends AbstractEntity {
     if (_equals_4) {
       daupi = 0.0;
     }
-    InputOutput.<String>println("..................");
     InputOutput.<String>print(("daupi :" + Double.valueOf(daupi)));
-    double animaux = 2.66738;
+    double animaux = 0.0;
     String _presence_animaux = this.getPresence_animaux();
     boolean _equals_5 = Objects.equal(_presence_animaux, "Intdrieur");
     if (_equals_5) {
@@ -533,6 +845,9 @@ public class Site extends AbstractEntity {
     boolean _equals_6 = Objects.equal(_presence_animaux_1, "Extdrieur");
     if (_equals_6) {
       animaux = 2.99492;
+    }
+    if (((Objects.equal(this.getPresence_animaux(), "Intdrieur & Extirieur") || Objects.equal(this.getPresence_animaux(), "Intdrieur & Exterieur")) || Objects.equal(this.getPresence_animaux(), "Intdrieur & Etxnrieur"))) {
+      animaux = 2.66738;
     }
     InputOutput.<String>println(("animaux: " + Double.valueOf(animaux)));
     double corine = 0.0;
@@ -606,11 +921,16 @@ public class Site extends AbstractEntity {
     double _plus_15 = (1 + _exp_1);
     double _divide = (_exp / _plus_15);
     prob = _divide;
+    this.setProb_imicola(Double.valueOf(prob));
     InputOutput.<String>println(("prob: " + Double.valueOf(prob)));
-    if ((prob < 0.5)) {
+    Double _seuil_pres = this.getSeuil_pres();
+    boolean _lessThan = (prob < (_seuil_pres).doubleValue());
+    if (_lessThan) {
       this.setImicola(Double.valueOf(0.0));
     }
-    if ((prob >= 0.5)) {
+    Double _seuil_pres_1 = this.getSeuil_pres();
+    boolean _greaterEqualsThan = (prob >= (_seuil_pres_1).doubleValue());
+    if (_greaterEqualsThan) {
       this.updateTemp();
       Double _eau_500 = this.getEau_500();
       double _multiply_4 = ((_eau_500).doubleValue() * (-2.0592));
@@ -625,267 +945,115 @@ public class Site extends AbstractEntity {
       String _plus_18 = ((((("temperature: " + temperature) + "; corine: ") + Double.valueOf(corine)) + "; eau_500: ") + _eau_500_1);
       String _plus_19 = (_plus_18 + "; eau_1000: ");
       Double _eau_1000_1 = this.getEau_1000();
-      double _divide_1 = ((_eau_1000_1).doubleValue() / 1000);
-      String _plus_20 = (_plus_19 + Double.valueOf(_divide_1));
+      String _plus_20 = (_plus_19 + _eau_1000_1);
       String _plus_21 = (_plus_20 + "; eau_2000: ");
       Double _eau_2000_1 = this.getEau_2000();
-      double _divide_2 = ((_eau_2000_1).doubleValue() / 1000);
-      String _plus_22 = (_plus_21 + Double.valueOf(_divide_2));
+      String _plus_22 = (_plus_21 + _eau_2000_1);
       InputOutput.<String>println(_plus_22);
       InputOutput.<String>println(("z: " + Double.valueOf(z)));
-      double _pow = Math.pow(10, (z - 1));
-      this.setImicola(Double.valueOf(_pow));
+      this.setImicola(Double.valueOf(Math.pow(10, (z - 1))));
     }
   }
   
-  public void lifeCycleFunctions(final Double temperature_grad) {
-    this.setFpon(Integer.valueOf((60 / 2)));
-    double _pow = Math.pow((temperature_grad).doubleValue(), 2);
-    double _multiply = (0.0375 * _pow);
-    double _minus = (_multiply - (1.9875 * (temperature_grad).doubleValue()));
-    double duree_el = (_minus + 27.75);
-    this.setFegg(Double.valueOf((1 / duree_el)));
-    if (((temperature_grad).doubleValue() < 25)) {
-      double _pow_1 = Math.pow((temperature_grad).doubleValue(), 2);
-      double _multiply_1 = ((-0.2141) * _pow_1);
-      double _plus = (_multiply_1 + (6.9271 * (temperature_grad).doubleValue()));
-      double _minus_1 = (_plus - 19.045);
-      double _divide = (_minus_1 / 100);
-      this.setFme(Double.valueOf(_divide));
+  public void calcKibatiensis() {
+    double tmin_qual = 0.0;
+    if ((((this.getTmax0_14()).doubleValue() > 8.46) && ((this.getTmax0_14()).doubleValue() < 12.2))) {
+      tmin_qual = 1.9955767;
     }
-    if (((temperature_grad).doubleValue() > 25)) {
-      double _pow_2 = Math.pow((temperature_grad).doubleValue(), 2);
-      double _multiply_2 = (0.3 * _pow_2);
-      double _minus_2 = (_multiply_2 - (17.5 * (temperature_grad).doubleValue()));
-      double _plus_1 = (_minus_2 + 270.0);
-      double _divide_1 = (_plus_1 / 100);
-      this.setFme(Double.valueOf(_divide_1));
+    if ((((this.getTmax0_14()).doubleValue() > 12.2) && ((this.getTmax0_14()).doubleValue() < 16.0))) {
+      tmin_qual = 0.2488846;
     }
-    Double _fme = this.getFme();
-    boolean _greaterThan = ((_fme).doubleValue() > 1.0);
+    if ((((this.getTmax0_14()).doubleValue() > 16.0) && ((this.getTmax0_14()).doubleValue() < 18.9))) {
+      tmin_qual = 0.5042979;
+    }
+    Double _tmax0_14 = this.getTmax0_14();
+    boolean _greaterThan = ((_tmax0_14).doubleValue() > 18.9);
     if (_greaterThan) {
-      this.setFme(Double.valueOf(1.0));
+      tmin_qual = (-0.8201423);
     }
-    Double _fme_1 = this.getFme();
-    boolean _lessThan = ((_fme_1).doubleValue() < 0.10);
-    if (_lessThan) {
-      this.setFme(Double.valueOf(0.10));
+    double corine = 0.0;
+    String _occsol = this.getOccsol();
+    boolean _equals = Objects.equal(_occsol, "2430");
+    if (_equals) {
+      corine = 1.4202163;
     }
-    double _pow_3 = Math.pow((temperature_grad).doubleValue(), 2);
-    double _multiply_3 = (0.0333 * _pow_3);
-    double _minus_3 = (_multiply_3 - (2.6 * (temperature_grad).doubleValue()));
-    double duree_lp = (_minus_3 + 54.667);
-    this.setFlarvae(Double.valueOf((1 / duree_lp)));
-    double _pow_4 = Math.pow((temperature_grad).doubleValue(), 3);
-    double _multiply_4 = ((-0.0002) * _pow_4);
-    double _pow_5 = Math.pow((temperature_grad).doubleValue(), 2);
-    double _multiply_5 = (0.0172 * _pow_5);
-    double _plus_2 = (_multiply_4 + _multiply_5);
-    double _minus_4 = (_plus_2 - (0.4991 * (temperature_grad).doubleValue()));
-    double _plus_3 = (_minus_4 + 4.8875);
-    this.setFml(Double.valueOf(_plus_3));
-    Double _fml = this.getFml();
-    boolean _greaterThan_1 = ((_fml).doubleValue() > 1.0);
+    String _occsol_1 = this.getOccsol();
+    boolean _equals_1 = Objects.equal(_occsol_1, "2112");
+    if (_equals_1) {
+      corine = 0.0;
+    }
+    String _occsol_2 = this.getOccsol();
+    boolean _equals_2 = Objects.equal(_occsol_2, "2310");
+    if (_equals_2) {
+      corine = 3.0061298;
+    }
+    String _occsol_3 = this.getOccsol();
+    boolean _equals_3 = Objects.equal(_occsol_3, "2420");
+    if (_equals_3) {
+      corine = 1.5044477;
+    }
+    String _occsol_4 = this.getOccsol();
+    boolean _equals_4 = Objects.equal(_occsol_4, "1120");
+    if (_equals_4) {
+      corine = 3.2433749;
+    }
+    double pluie = 0.0;
+    Double _rain = this.getRain();
+    boolean _greaterThan_1 = ((_rain).doubleValue() > 0.0);
     if (_greaterThan_1) {
-      this.setFml(Double.valueOf(1.0));
+      pluie = 0.8705422;
     }
-    Double _fml_1 = this.getFml();
-    boolean _lessThan_1 = ((_fml_1).doubleValue() < 0.10);
-    if (_lessThan_1) {
-      this.setFml(Double.valueOf(0.10));
+    double wind_1 = 0.0;
+    if (((((this.getVent_1()).doubleValue() < 0.28) && Objects.equal(this.getMesure_vent(), "2")) || (((this.getVent_1()).doubleValue() < 2.60) && Objects.equal(this.getMesure_vent(), "10")))) {
+      wind_1 = 0.0;
     }
-    double _pow_6 = Math.pow((temperature_grad).doubleValue(), 2);
-    double _multiply_6 = (0.0083 * _pow_6);
-    double _minus_5 = (_multiply_6 - (0.475 * (temperature_grad).doubleValue()));
-    double _plus_4 = (_minus_5 + 9.1667);
-    double _divide_2 = (1 / _plus_4);
-    this.setFpupae(Double.valueOf(_divide_2));
-    double _pow_7 = Math.pow((temperature_grad).doubleValue(), 2);
-    double _multiply_7 = (0.0012 * _pow_7);
-    double _minus_6 = (_multiply_7 - (0.0627 * (temperature_grad).doubleValue()));
-    double _plus_5 = (_minus_6 + 0.8539);
-    this.setFmp(Double.valueOf(_plus_5));
-    Double _fmp = this.getFmp();
-    boolean _greaterThan_2 = ((_fmp).doubleValue() > 1);
-    if (_greaterThan_2) {
-      this.setFmp(Double.valueOf(1.0));
+    if ((((((this.getVent_1()).doubleValue() > 0.28) && ((this.getVent_1()).doubleValue() < 0.97)) && Objects.equal(this.getMesure_vent(), "2")) || ((((this.getVent_1()).doubleValue() > 2.60) && ((this.getVent_1()).doubleValue() < 5.80)) && Objects.equal(this.getMesure_vent(), "10")))) {
+      wind_1 = (-0.7224247);
     }
-    double _pow_8 = Math.pow((temperature_grad).doubleValue(), 2);
-    double _multiply_8 = (0.6208 * _pow_8);
-    double _minus_7 = (_multiply_8 - (31.738 * (temperature_grad).doubleValue()));
-    double cycle_gon = (_minus_7 + 409.42);
-    this.setFaov(Double.valueOf((1 / cycle_gon)));
-    if (((temperature_grad).doubleValue() < 15)) {
-      double _pow_9 = Math.pow((temperature_grad).doubleValue(), 2);
-      double _multiply_9 = ((-0.002) * _pow_9);
-      double _plus_6 = (_multiply_9 + (0.0727 * (temperature_grad).doubleValue()));
-      double _plus_7 = (_plus_6 + 0.3232);
-      this.setFma(Double.valueOf(_plus_7));
-      Double _fma = this.getFma();
-      double _minus_8 = (1 - (_fma).doubleValue());
-      this.setFma(Double.valueOf(_minus_8));
+    if ((((((this.getVent_1()).doubleValue() > 0.97) && ((this.getVent_1()).doubleValue() < 1.66)) && Objects.equal(this.getMesure_vent(), "2")) || ((((this.getVent_1()).doubleValue() > 5.80) && ((this.getVent_1()).doubleValue() < 8.99)) && Objects.equal(this.getMesure_vent(), "10")))) {
+      wind_1 = (-1.5564980);
     }
-    if ((((temperature_grad).doubleValue() > 15) && ((temperature_grad).doubleValue() < 35))) {
-      double _pow_10 = Math.pow((temperature_grad).doubleValue(), 2);
-      double _multiply_10 = (0.0002 * _pow_10);
-      double _minus_9 = (_multiply_10 - (0.016 * (temperature_grad).doubleValue()));
-      double _plus_8 = (_minus_9 + 1.155);
-      this.setFma(Double.valueOf(_plus_8));
-      Double _fma_1 = this.getFma();
-      double _minus_10 = (1 - (_fma_1).doubleValue());
-      this.setFma(Double.valueOf(_minus_10));
+    if (((((this.getVent_1()).doubleValue() > 1.66) && Objects.equal(this.getMesure_vent(), "2")) || (((this.getVent_1()).doubleValue() > 8.99) && Objects.equal(this.getMesure_vent(), "10")))) {
+      wind_1 = (-0.0513435);
     }
-    if (((temperature_grad).doubleValue() > 35)) {
-      double _pow_11 = Math.pow((temperature_grad).doubleValue(), 2);
-      double _multiply_11 = ((-0.0068) * _pow_11);
-      double _plus_9 = (_multiply_11 + (0.4054 * (temperature_grad).doubleValue()));
-      double _minus_11 = (_plus_9 - 4.9906);
-      this.setFma(Double.valueOf(_minus_11));
-      Double _fma_2 = this.getFma();
-      double _minus_12 = (1 - (_fma_2).doubleValue());
-      this.setFma(Double.valueOf(_minus_12));
+    double wind = 0.0;
+    if (((((this.getVent()).doubleValue() < 0.28) && Objects.equal(this.getMesure_vent(), "2")) || (((this.getVent()).doubleValue() < 2.60) && Objects.equal(this.getMesure_vent(), "10")))) {
+      wind = 0.0;
     }
-    Double _fma_3 = this.getFma();
-    boolean _greaterThan_3 = ((_fma_3).doubleValue() > 0.99);
-    if (_greaterThan_3) {
-      this.setFma(Double.valueOf(0.99));
+    if ((((((this.getVent()).doubleValue() > 0.28) && ((this.getVent()).doubleValue() < 0.97)) && Objects.equal(this.getMesure_vent(), "2")) || ((((this.getVent()).doubleValue() > 2.60) && ((this.getVent()).doubleValue() < 5.80)) && Objects.equal(this.getMesure_vent(), "10")))) {
+      wind = 0.2876684;
     }
-    Double _fma_4 = this.getFma();
-    boolean _lessThan_2 = ((_fma_4).doubleValue() < 0.0);
-    if (_lessThan_2) {
-      this.setFma(Double.valueOf(0.0));
+    if (((((this.getVent()).doubleValue() > 0.97) && Objects.equal(this.getMesure_vent(), "2")) || (((this.getVent()).doubleValue() > 5.80) && Objects.equal(this.getMesure_vent(), "10")))) {
+      wind = (-0.86293340);
     }
-  }
-  
-  public void dynPop(final Double dt) {
-    long _round = Math.round((1 / (dt).doubleValue()));
-    int npastemps = Long.valueOf(_round).intValue();
-    Double x1 = this.getEggs();
-    Double x2 = this.getLarvae();
-    Double x3 = this.getPupae();
-    Double x4 = this.getAdults();
-    Double x5 = this.getAdults_ov();
-    double k1 = 0.0;
-    double l1 = 0.0;
-    double m1 = 0.0;
-    double n1 = 0.0;
-    double o1 = 0.0;
-    IntegerRange _upTo = new IntegerRange(1, npastemps);
-    for (final Integer y : _upTo) {
-      {
-        Integer _fpon = this.getFpon();
-        double _multiply = DoubleExtensions.operator_multiply(x5, _fpon);
-        Double _fegg = this.getFegg();
-        double _multiply_1 = DoubleExtensions.operator_multiply(x1, _fegg);
-        double _minus = (_multiply - _multiply_1);
-        Double _fme = this.getFme();
-        double _multiply_2 = DoubleExtensions.operator_multiply(x1, _fme);
-        double _minus_1 = (_minus - _multiply_2);
-        k1 = _minus_1;
-        Double _fegg_1 = this.getFegg();
-        double _multiply_3 = DoubleExtensions.operator_multiply(x1, _fegg_1);
-        Double _flarvae = this.getFlarvae();
-        double _multiply_4 = DoubleExtensions.operator_multiply(x2, _flarvae);
-        double _minus_2 = (_multiply_3 - _multiply_4);
-        Double _fml = this.getFml();
-        double _multiply_5 = DoubleExtensions.operator_multiply(x2, _fml);
-        Integer _kl = this.getKl();
-        double _divide = DoubleExtensions.operator_divide(x2, _kl);
-        double _plus = (1 + _divide);
-        double _multiply_6 = (_multiply_5 * _plus);
-        double _minus_3 = (_minus_2 - _multiply_6);
-        l1 = _minus_3;
-        Double _flarvae_1 = this.getFlarvae();
-        double _multiply_7 = DoubleExtensions.operator_multiply(x2, _flarvae_1);
-        Double _fpupae = this.getFpupae();
-        double _multiply_8 = DoubleExtensions.operator_multiply(x3, _fpupae);
-        double _minus_4 = (_multiply_7 - _multiply_8);
-        Double _fmp = this.getFmp();
-        double _multiply_9 = DoubleExtensions.operator_multiply(x3, _fmp);
-        double _minus_5 = (_minus_4 - _multiply_9);
-        m1 = _minus_5;
-        Double _fpupae_1 = this.getFpupae();
-        double _multiply_10 = DoubleExtensions.operator_multiply(x3, _fpupae_1);
-        Double _faov = this.getFaov();
-        double _multiply_11 = DoubleExtensions.operator_multiply(x4, _faov);
-        double _minus_6 = (_multiply_10 - _multiply_11);
-        Double _fma = this.getFma();
-        double _multiply_12 = DoubleExtensions.operator_multiply(x4, _fma);
-        double _minus_7 = (_minus_6 - _multiply_12);
-        double _plus_1 = (_minus_7 + (x5).doubleValue());
-        n1 = _plus_1;
-        Double _faov_1 = this.getFaov();
-        double _multiply_13 = DoubleExtensions.operator_multiply(x4, _faov_1);
-        double _minus_8 = (_multiply_13 - (x5).doubleValue());
-        o1 = _minus_8;
-        double k = ((x1).doubleValue() + ((dt).doubleValue() * k1));
-        double l = ((x2).doubleValue() + ((dt).doubleValue() * l1));
-        double m = ((x3).doubleValue() + ((dt).doubleValue() * m1));
-        double n = ((x4).doubleValue() + ((dt).doubleValue() * n1));
-        double o = ((x5).doubleValue() + ((dt).doubleValue() * o1));
-        x1 = Double.valueOf(k);
-        x2 = Double.valueOf(l);
-        x3 = Double.valueOf(m);
-        x4 = Double.valueOf(n);
-        x5 = Double.valueOf(o);
-      }
-    }
-    this.setEggs(x1);
-    this.setLarvae(x2);
-    this.setPupae(x3);
-    this.setAdults(x4);
-    this.setAdults_ov(x5);
+    Double _humidite = this.getHumidite();
+    double _multiply = ((_humidite).doubleValue() * (-0.0394085));
+    double _plus = (((-2.8243244) + tmin_qual) + _multiply);
+    Double _rain_8 = this.getRain_8();
+    double _multiply_1 = ((_rain_8).doubleValue() * 0.0953447);
+    double _plus_1 = (_plus + _multiply_1);
+    double _plus_2 = (_plus_1 + pluie);
+    double _plus_3 = (_plus_2 + wind);
+    double _plus_4 = (_plus_3 + wind_1);
+    Integer _ndvi_26 = this.getNdvi_26();
+    double _multiply_2 = ((_ndvi_26).intValue() * 0.0005190);
+    double _plus_5 = (_plus_4 + _multiply_2);
+    double _plus_6 = (_plus_5 + corine);
+    Double _eau_500 = this.getEau_500();
+    double _multiply_3 = ((_eau_500).doubleValue() * 0.6277210);
+    double p = (_plus_6 + _multiply_3);
+    double _exp = Math.exp(p);
+    double _exp_1 = Math.exp(p);
+    double _plus_7 = (1 + _exp_1);
+    double _divide = (_exp / _plus_7);
+    this.setProb_kibatiensis(Double.valueOf(_divide));
   }
   
   public void classify() {
-    Double _adults = this.getAdults();
-    boolean _lessThan = ((_adults).doubleValue() < 50);
+    Double _prob_bolitinos = this.getProb_bolitinos();
+    boolean _lessThan = ((_prob_bolitinos).doubleValue() < 0.50);
     if (_lessThan) {
       this.setClassCuli(Integer.valueOf(1));
-    }
-    boolean _and = false;
-    Double _adults_1 = this.getAdults();
-    boolean _greaterEqualsThan = ((_adults_1).doubleValue() >= 50);
-    if (!_greaterEqualsThan) {
-      _and = false;
-    } else {
-      Double _adults_2 = this.getAdults();
-      boolean _lessThan_1 = ((_adults_2).doubleValue() < 100);
-      _and = _lessThan_1;
-    }
-    if (_and) {
-      this.setClassCuli(Integer.valueOf(2));
-    }
-    boolean _and_1 = false;
-    Double _adults_3 = this.getAdults();
-    boolean _greaterEqualsThan_1 = ((_adults_3).doubleValue() >= 100);
-    if (!_greaterEqualsThan_1) {
-      _and_1 = false;
-    } else {
-      Double _adults_4 = this.getAdults();
-      boolean _lessThan_2 = ((_adults_4).doubleValue() < 200);
-      _and_1 = _lessThan_2;
-    }
-    if (_and_1) {
-      this.setClassCuli(Integer.valueOf(3));
-    }
-    boolean _and_2 = false;
-    Double _adults_5 = this.getAdults();
-    boolean _greaterEqualsThan_2 = ((_adults_5).doubleValue() >= 200);
-    if (!_greaterEqualsThan_2) {
-      _and_2 = false;
-    } else {
-      Double _adults_6 = this.getAdults();
-      boolean _lessThan_3 = ((_adults_6).doubleValue() < 300);
-      _and_2 = _lessThan_3;
-    }
-    if (_and_2) {
-      this.setClassCuli(Integer.valueOf(4));
-    }
-    Double _adults_7 = this.getAdults();
-    boolean _greaterEqualsThan_3 = ((_adults_7).doubleValue() >= 300);
-    if (_greaterEqualsThan_3) {
-      this.setClassCuli(Integer.valueOf(5));
     }
   }
   
@@ -900,20 +1068,23 @@ public class Site extends AbstractEntity {
     Date deb = now;
     Date fin = now.clone();
     fin.addDays((frequencedisplay).intValue());
-    Point _geom = this.getGeom();
-    kml.addGeometry(style, id, deb, fin, _geom, style, 0);
+    kml.addGeometry(style, id, deb, fin, this.getGeom(), style, 0);
   }
   
   public Site() {
     super();
     defProperty("id",new Hproperty<Integer>());
     setId(new Integer("0"));
+    defProperty("pl",new Hproperty<String>());
+    setPl(new String());
     defProperty("commune",new Hproperty<String>());
     setCommune(new String());
-    defProperty("altitude",new Hproperty<Integer>());
-    setAltitude(new Integer("0"));
-    defProperty("diff_alt",new Hproperty<Integer>());
-    setDiff_alt(new Integer("0"));
+    defProperty("altitude",new Hproperty<Double>());
+    setAltitude(new Double("0"));
+    defProperty("diff_alt",new Hproperty<Double>());
+    setDiff_alt(new Double("0"));
+    defProperty("coeff_alt",new Hproperty<Double>());
+    setCoeff_alt(new Double("0"));
     defProperty("kl",new Hproperty<Integer>());
     setKl(new Integer("0"));
     defProperty("nom",new Hproperty<String>());
@@ -932,6 +1103,12 @@ public class Site extends AbstractEntity {
     setEau_2000(new Double("0"));
     defProperty("ndvi",new Hproperty<Integer>());
     setNdvi(new Integer("0"));
+    defProperty("ndvi_id",new Hproperty<Integer>());
+    setNdvi_id(new Integer("0"));
+    defProperty("ndvi_26",new Hproperty<Integer>());
+    setNdvi_26(new Integer("0"));
+    defProperty("ndvi_map",new Hproperty<KeyMap<Integer, Integer>>());
+    setNdvi_map(new KeyMap<Integer, Integer>());
     defProperty("geom",new Hproperty<Point>());
     setGeom(new Point());
     defProperty("date_begin",new Hproperty<String>());
@@ -952,73 +1129,85 @@ public class Site extends AbstractEntity {
     setId_station_h(new Integer("0"));
     defProperty("num_station_h",new Hproperty<Long>());
     setNum_station_h(new Long("0"));
-    defProperty("eggs",new Hproperty<Double>());
-    setEggs(new Double("0"));
-    defProperty("larvae",new Hproperty<Double>());
-    setLarvae(new Double("0"));
-    defProperty("pupae",new Hproperty<Double>());
-    setPupae(new Double("0"));
-    defProperty("adults",new Hproperty<Double>());
-    setAdults(new Double("0"));
-    defProperty("adults_ov",new Hproperty<Double>());
-    setAdults_ov(new Double("0"));
+    defProperty("dist_station_v",new Hproperty<Double>());
+    setDist_station_v(new Double("0"));
+    defProperty("id_station_v",new Hproperty<Integer>());
+    setId_station_v(new Integer("0"));
+    defProperty("num_station_v",new Hproperty<Long>());
+    setNum_station_v(new Long("0"));
+    defProperty("prob_bolitinos",new Hproperty<Double>());
+    setProb_bolitinos(new Double("0"));
+    defProperty("bolitinos",new Hproperty<Double>());
+    setBolitinos(new Double("0"));
+    defProperty("prob_enderleini",new Hproperty<Double>());
+    setProb_enderleini(new Double("0"));
+    defProperty("enderleini",new Hproperty<Double>());
+    setEnderleini(new Double("0"));
+    defProperty("prob_grahamii",new Hproperty<Double>());
+    setProb_grahamii(new Double("0"));
+    defProperty("grahamii",new Hproperty<Double>());
+    setGrahamii(new Double("0"));
     defProperty("prob_imicola",new Hproperty<Double>());
     setProb_imicola(new Double("0"));
     defProperty("imicola",new Hproperty<Double>());
     setImicola(new Double("0"));
-    defProperty("fpon",new Hproperty<Integer>());
-    setFpon(new Integer("0"));
-    defProperty("fegg",new Hproperty<Double>());
-    setFegg(new Double("0"));
-    defProperty("flarvae",new Hproperty<Double>());
-    setFlarvae(new Double("0"));
-    defProperty("fpupae",new Hproperty<Double>());
-    setFpupae(new Double("0"));
-    defProperty("faov",new Hproperty<Double>());
-    setFaov(new Double("0"));
-    defProperty("fme",new Hproperty<Double>());
-    setFme(new Double("0"));
-    defProperty("fml",new Hproperty<Double>());
-    setFml(new Double("0"));
-    defProperty("fmp",new Hproperty<Double>());
-    setFmp(new Double("0"));
-    defProperty("fma",new Hproperty<Double>());
-    setFma(new Double("0"));
-    defProperty("temperature",new Hproperty<Double>());
-    setTemperature(new Double("0"));
-    defProperty("temperature_grad",new Hproperty<Double>());
-    setTemperature_grad(new Double("0"));
+    defProperty("prob_kibatiensis",new Hproperty<Double>());
+    setProb_kibatiensis(new Double("0"));
+    defProperty("kibatiensis",new Hproperty<Double>());
+    setKibatiensis(new Double("0"));
+    defProperty("seuil_pres",new Hproperty<Double>());
+    setSeuil_pres(new Double("0"));
     defProperty("rain",new Hproperty<Double>());
     setRain(new Double("0"));
     defProperty("rain7",new Hproperty<Double>());
     setRain7(new Double("0"));
     defProperty("rainmoy4_5",new Hproperty<Double>());
     setRainmoy4_5(new Double("0"));
-    defProperty("tmin",new Hproperty<Double>());
-    setTmin(new Double("0"));
-    defProperty("tmax",new Hproperty<Double>());
-    setTmax(new Double("0"));
+    defProperty("rainlog1_2",new Hproperty<Double>());
+    setRainlog1_2(new Double("0"));
+    defProperty("rain_8",new Hproperty<Double>());
+    setRain_8(new Double("0"));
+    defProperty("rain_20",new Hproperty<Double>());
+    setRain_20(new Double("0"));
+    defProperty("rain_28",new Hproperty<Double>());
+    setRain_28(new Double("0"));
     defProperty("classCuli",new Hproperty<Integer>());
     setClassCuli(new Integer("0"));
     defProperty("date",new Hproperty<Date>());
     setDate(new Date());
     defProperty("ktmin",new Hproperty<KeyMap<Date, Double>>());
     setKtmin(new KeyMap<Date, Double>());
+    defProperty("temperature",new Hproperty<Double>());
+    setTemperature(new Double("0"));
+    defProperty("temperature_grad",new Hproperty<Double>());
+    setTemperature_grad(new Double("0"));
     defProperty("tmoy0_17",new Hproperty<Double>());
     setTmoy0_17(new Double("0"));
     defProperty("tmoy16_18",new Hproperty<Double>());
     setTmoy16_18(new Double("0"));
     defProperty("tmin0_14",new Hproperty<Double>());
     setTmin0_14(new Double("0"));
-    defProperty("tmax0_2",new Hproperty<Double>());
-    setTmax0_2(new Double("0"));
+    defProperty("tmoymax0_2",new Hproperty<Double>());
+    setTmoymax0_2(new Double("0"));
     defProperty("tmax0_14",new Hproperty<Double>());
     setTmax0_14(new Double("0"));
     defProperty("tmax1_19",new Hproperty<Double>());
     setTmax1_19(new Double("0"));
     defProperty("tmax_11",new Hproperty<Double>());
     setTmax_11(new Double("0"));
+    defProperty("tmin",new Hproperty<Double>());
+    setTmin(new Double("0"));
+    defProperty("tmax",new Hproperty<Double>());
+    setTmax(new Double("0"));
     defProperty("humidite",new Hproperty<Double>());
     setHumidite(new Double("0"));
+    defProperty("mesure_vent",new Hproperty<String>());
+    setMesure_vent(new String());
+    defProperty("vent",new Hproperty<Double>());
+    setVent(new Double("0"));
+    defProperty("vent_1",new Hproperty<Double>());
+    setVent_1(new Double("0"));
+    defProperty("voisin_ndvi",new Hproperty<Integer>());
+    setVoisin_ndvi(new Integer("0"));
   }
 }

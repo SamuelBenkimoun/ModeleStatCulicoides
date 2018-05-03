@@ -5,7 +5,6 @@ import fr.ocelet.model.dynpopculicoides.MasqueNdvi_Edge;
 import fr.ocelet.model.dynpopculicoides.Ndvi;
 import fr.ocelet.runtime.ocltypes.List;
 import fr.ocelet.runtime.raster.CellAggregOperator;
-import fr.ocelet.runtime.raster.Grid;
 import fr.ocelet.runtime.relation.impl.DiCellGraph;
 
 @SuppressWarnings("all")
@@ -14,11 +13,11 @@ public class MasqueNdvi extends DiCellGraph<MasqueNdvi_Edge, Masque, Ndvi> {
     super();
   }
   
-  public void connect(final Grid grid1, final Grid grid2) {
+  public void connect(final List<Masque> ms, final List<Ndvi> ns) {
     
-                      super.setGrid(grid1, grid2);
-                       MasqueNdvi_Edge _gen_edge_ = new MasqueNdvi_Edge(grid1, grid2);
-         		  	  setCompleteIteratorDiCell(_gen_edge_ );
+    super.setGrid(ms, ns);
+                       MasqueNdvi_Edge _gen_edge_ = new MasqueNdvi_Edge(ms, ns);
+                    		setCompleteIteratorDiCell(_gen_edge_ );
   }
   
   public void lisibiliteNDVI() {

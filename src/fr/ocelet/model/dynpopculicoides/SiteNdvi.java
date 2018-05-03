@@ -5,7 +5,6 @@ import fr.ocelet.model.dynpopculicoides.Site;
 import fr.ocelet.model.dynpopculicoides.SiteNdvi_Edge;
 import fr.ocelet.runtime.ocltypes.List;
 import fr.ocelet.runtime.raster.CellAggregOperator;
-import fr.ocelet.runtime.raster.Grid;
 import fr.ocelet.runtime.relation.impl.GeometryCellGraph;
 
 @SuppressWarnings("all")
@@ -14,8 +13,8 @@ public class SiteNdvi extends GeometryCellGraph<SiteNdvi_Edge, Ndvi, Site> {
     super();
   }
   
-  public void connect(final Grid grid, final List<Site> geom) {
-    SiteNdvi_Edge _gen_edge = new SiteNdvi_Edge(grid, geom);
+  public void connect(final List<Ndvi> ns, final List<Site> ss) {
+    SiteNdvi_Edge _gen_edge = new SiteNdvi_Edge(ns, ss);
          		  	  setCompleteIteratorGeomCell(_gen_edge);
   }
   

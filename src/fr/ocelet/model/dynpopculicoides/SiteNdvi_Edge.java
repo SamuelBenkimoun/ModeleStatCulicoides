@@ -2,9 +2,9 @@ package fr.ocelet.model.dynpopculicoides;
 
 import fr.ocelet.model.dynpopculicoides.Ndvi;
 import fr.ocelet.model.dynpopculicoides.Site;
+import fr.ocelet.runtime.ocltypes.KeyMap;
 import fr.ocelet.runtime.ocltypes.List;
 import fr.ocelet.runtime.raster.CellAggregOperator;
-import fr.ocelet.runtime.raster.Grid;
 import fr.ocelet.runtime.relation.GeomCellEdge;
 import fr.ocelet.runtime.relation.OcltRole;
 
@@ -30,10 +30,11 @@ public class SiteNdvi_Edge extends GeomCellEdge<Ndvi, Site> {
     return this.s;
   }
   
-  public SiteNdvi_Edge(final Grid grid, final List<Site> geom) {
-    super(grid, geom);  
+  public SiteNdvi_Edge(final List<Ndvi> ns, final List<Site> ss) {
+    super(ns, ss);  
     this.n = new Ndvi();
-    n.updateCellInfo(getCellType());
+    this.n.getCell().setGrid(grid);
+              			 
   }
   
   public OcltRole getRole(final int i) {
@@ -50,13 +51,20 @@ public class SiteNdvi_Edge extends GeomCellEdge<Ndvi, Site> {
   
   public void setNdvi() {
     Boolean _nuages = this.n.getNuages();
-    if ((_nuages).booleanValue()) {
-      Integer _valeur = this.n.getValeur();
-      this.s.setNdvi(_valeur);
+    boolean _equals = ((_nuages).booleanValue() == false);
+    if (_equals) {
+      this.s.setNdvi(this.n.getValeur());
+    } else {
+      this.s.setNdvi(Integer.valueOf((-99999)));
     }
   }
   
   public List<CellAggregOperator> get_agr_setNdvi() {
     return null;
+  }
+  
+  public KeyMap<String, String> getEdgeProperties() {
+    KeyMap<String, String> properties = new KeyMap<String, String>();	
+    return properties;         	  	      		
   }
 }

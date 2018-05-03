@@ -1,20 +1,45 @@
-relation SiteNdvi <Site s, Ndvi n> {
-	interaction setNdvi (){
-		if (n.nuages) {
-		s.ndvi = n.valeur
+relation MasqueNdvi <Masque m, Ndvi n> { // relation pour lier les images ndvi aux masques de nuages
+	interaction lisibiliteNDVI () { // 
+		
+		if (m.valeur == 99){
+			n.nuages = true  // le ndvi est masqué par les nuages
+		}
+		
+		if (m.valeur != 99){
+			n.nuages = false // le ndvi est lisible
 		}
 	}
 }
 
-relation MasqueNdvi <Masque m, Ndvi n> {
-	interaction lisibiliteNDVI () {
-		
-		if (m.valeur == 99){
-			n.nuages = true
+relation SiteNdvi <Ndvi n, Site s> { // relation pour lier les sites aux images de ndvi
+	interaction setNdvi (){
+		if (n.nuages == false) {  // s'il n'y a pas de nuages on attribue la valeur du pixel correspondant
+		s.ndvi = n.valeur
 		}
-		
-		if (m.valeur != 99){
-			n.nuages = false
-		}
+		else s.ndvi = -99999 // valeur discriminante pour isoler les sites n'ayant pas de ndvi valide à cause des nuages
 	}
+}
+
+relation SiteGrid <Grid g, Site s> {
+	
+	filter intersect () {
+			return s.geom.intersects(g.geom) // la relation ne s'applique que sur les sites inclus à l'intérieur de la cellule
+		}
+	
+	interaction avgProb () {	
+		g.prob_bolitinos = s.prob_bolitinos
+		g.prob_enderleini = s.prob_enderleini
+		g.prob_grahamii = s.prob_grahamii
+		g.prob_imicola = s.prob_imicola
+		g.prob_kibatiensis = s.prob_kibatiensis
+		}
+	
+	agg { // on établit la moyenne de toutes les valeurs de probabilité des sites situés dans la cellule
+		g.prob_bolitinos << Mean 
+		g.prob_enderleini << Mean
+		g.prob_grahamii << Mean
+		g.prob_imicola << Mean
+		g.prob_kibatiensis << Mean
+			
+		}
 }

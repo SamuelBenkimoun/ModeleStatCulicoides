@@ -8,22 +8,22 @@ import fr.ocelet.runtime.ocltypes.List;
 @SuppressWarnings("all")
 public class Ndvi extends AbstractEntity {
   public void setValeur(final Integer valeur) {
-    fr.ocelet.runtime.raster.GridManager.getInstance().get(numGrid).setValue("valeur",getX(), getY(),valeur.doubleValue());
+    cell.getGrid().setValue("valeur",getX(), getY(),valeur.doubleValue());
   }
   
   public Integer getValeur() {
-    return fr.ocelet.runtime.raster.GridManager.getInstance().get(numGrid).getValue("valeur",getX(), getY()).intValue();
+    return cell.getGrid().getValue("valeur",getX(), getY()).intValue();
   }
   
   public void setNuages(final Boolean nuages) {
     if(nuages == true)
-    										fr.ocelet.runtime.raster.GridManager.getInstance().get(numGrid).setValue("nuages",getX(), getY(),1.0);
-    										fr.ocelet.runtime.raster.GridManager.getInstance().get(numGrid).setValue("nuages",getX(), getY(),0.0);
+    										cell.getGrid().setValue("nuages",getX(), getY(),1.0);
+    										cell.getGrid().setValue("nuages",getX(), getY(),0.0);
     
   }
   
   public Boolean getNuages() {
-    Double val =fr.ocelet.runtime.raster.GridManager.getInstance().get(numGrid).getValue("nuages",getX(), getY());
+    Double val =cell.getGrid().getValue("nuages",getX(), getY());
     if(val == 0){
     	return true;
     } 
@@ -51,8 +51,7 @@ public class Ndvi extends AbstractEntity {
   
   public void updateCellInfo(final String type) {
     this.cell.setType(type);
-    this.cell.setNumGrid(this.numGrid);
-    this.cell.updateResInfo();
+          		  		
   }
   
   private Cell cell;
@@ -62,15 +61,6 @@ public class Ndvi extends AbstractEntity {
   private Integer y;
   
   private static Integer numGrid;
-  
-  public void setNumGrid(final Integer numGrid) {
-    this.numGrid = numGrid;
-    this.cell.setNumGrid(this.numGrid);
-  }
-  
-  public Integer getNumGrid() {
-    return this.numGrid;
-  }
   
   public void setX(final Integer x) {
     this.cell.setX(x); 

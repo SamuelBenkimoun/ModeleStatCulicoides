@@ -13,9 +13,12 @@
 }
 */
 datafacer Shp {
-	data Shapefile("data/TRAVAIL/SHAPEFILE/SITES/elevages_cigal_join_req_min.shp","EPSG:2975")	// RGR92_UTM_zone_40S
+	//data Shapefile("data/TRAVAIL/SHAPEFILE/SITES/elevages_cigal_join_req_min.shp","EPSG:2975")
+	//data Shapefile("data/TRAVAIL/SHAPEFILE/SITES/elevages_cigal_join_req.shp","EPSG:2975")	// RGR92_UTM_zone_40S
+	data Shapefile("data/TRAVAIL/SHAPEFILE/SITES/elevages_req_correct_merge2.shp","EPSG:2975")	// RGR92_UTM_zone_40S	
 	match Site {
 		id : "OBJECTID"
+		//pl : "974PL"
 		nom : "Nom"
 		altitude : "join_ELEV"
 		geom : "geom"
@@ -25,7 +28,7 @@ datafacer Shp {
 		eau_1000 : "LENGTH_100"
 		eau_2000 : "LENGTH_200"
 		presence_animaux : "Presence_a"
-		
+		altitude : "join_ELEV"
 		}
 }
 
@@ -41,12 +44,21 @@ datafacer ShpStation {
 }
 
 
-
 datafacer ShpHum {
 	data Shapefile ("data/TRAVAIL/SHAPEFILE/STATIONS/Stations_Humidite.shp", "EPSG:2975")
 	match Station_Hum{
 		name : "Nom de sta"
 		numero : "Numero"
+		geom : "geom"
+	}
+}
+
+datafacer ShpVent {
+	data Shapefile ("data/TRAVAIL/SHAPEFILE/STATIONS/stations_vent_fusion.shp", "EPSG:2975") // stations mesurant le vent à 2 et 10m de hauteur confondues
+	match Station_Vent {
+		name: "Nom de sta"
+		numero : "Numero"
+		mesure : "Mesure"
 		geom : "geom"
 	}
 }
@@ -75,6 +87,14 @@ datafacer CsvHum {
 	}
 }
 
+datafacer CsvVent {
+	data Csvfile("data/TRAVAIL/CSVDATA/METEO/VENT/97405420.csv")
+	match CSV_Vent{
+		numero : "Poste"
+		vent : "Vitesse_ms"
+	}
+}
+
 // Define datafacer for kml export
 datafacer KmlOut {
 	//data KmlExport(outputDir + "/"+region + "_serietemporelle.kml")
@@ -89,44 +109,76 @@ datafacer ShpOutAllDates {
 	data Shapefile("output/REUNION_serietemporelle.shp","EPSG:2975")
 	match Site {
 		geom : "geom"
+		pl : "974PL"
 		id: "ID"
-		commune: "Commune"
+		//commune: "Commune"
 		date_begin: "date_debut"
-		//nom_station: "Stat_meteo"
-		//eggs : "oeufs"
-		//larvae : "larves"
-		//pupae : "nymphes"
-		//adults : "adultes"
-		//adults_ov : "adultes_ov"
-		//temperature : "temp"
-		//temperature_grad : "t_grad"	
+		coeff_alt : "coeff_alt"
+		rainlog1_2 : "logpluie1-2"
+		rain_20 : "rain_20"
+		rain_28 : "rain_28"
+		rainmoy4_5 : "rmoy4_5"
+		rain_8 : "rain_8"
+		occsol : "occsol"
+		presence_animaux : "animaux"
 		tmoy0_17: "tmoy0-17"	
-		tmoy16_18: "tmoy16-18"
 		tmin0_14: "tmin0-14"
-		tmax0_2: "tmin0-2"
 		tmax0_14: "tmax0-14"
-		tmax1_19: "tmax1-19"
-		tmax_11	: "tmax11"
+		tmoy16_18: "tmoy16_18"
+		tmoymax0_2 : "tmoymax0_2"
+		tmax_11 : "tmax_11"
 		humidite : "humidite"
+		vent : "vent"
+		vent_1 : "vent_1"
 		num_station_h : "num_h"
-		id_station_h : "id_h"
-		//prob_imicola : "prob_imicola"
-		imicola : "imicola"
+		//id_station_h : "id_h"
+		prob_bolitinos : "prob_bol"
+		prob_enderleini : "prob_end"
+		prob_grahamii : "prob_gr"
+		prob_imicola : "prob_imic"
+		prob_kibatiensis : "prob_kib"
+		//imicola : "imicola"
 		eau_500 : "eau_500"
 		eau_1000 : "eau_1000"
 		eau_2000 : "eau_2000"
+		ndvi : "ndvi"
+		ndvi_id : "ndvi_id"
+		//ndvi_26 : "ndvi_26"
+	}
+}
+
+datafacer Grid_1000 {
+	data Shapefile("data/TRAVAIL/SHAPEFILE/GRID/Grid_filtered.shp", "EPSG:2975")
+	match Grid {
+		geom : "geom"
+		id : "id"
+	}
+}
+
+datafacer Grid_Output {
+	data Shapefile("output/Grille.shp", "EPSG:2975")
+	match Grid {
+		geom : "geom"
+		date_begin : "date_begin"
+		id : "id"
+		prob_bolitinos : "prob_bol"
+		prob_enderleini : "prob_end"
+		prob_grahamii : "prob_gr"
+		prob_imicola : "prob_imic"
+		prob_kibatiensis : "prob_kib"
+		imicola : "imicola"
 	}
 }
 
 datafacer RasterNdvi {
-	store RasterFile ("data/TRAVAIL/IMAGES/T40KCB_NDVI_2016/NDVI", "EPSG:4326")
+	data RasterFile ("data/TRAVAIL/IMAGES/T40KCB_NDVI_2016/NDVI", "EPSG:2975")
 	match Ndvi{
 		valeur : "0"
 	}
 }
 
 datafacer RasterMasque {
-	store RasterFile ("data/TRAVAIL/IMAGES/T40KCB_NDVI_2016/SEN2COR_MASKS")//, "EPSG:4326")
+	data RasterFile ("data/TRAVAIL/IMAGES/T40KCB_NDVI_2016/SEN2COR_MASKS", "EPSG:2975")
 	match Masque {
 		valeur : "0"
 	}

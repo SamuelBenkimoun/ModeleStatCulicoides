@@ -2,9 +2,9 @@ package fr.ocelet.model.dynpopculicoides;
 
 import fr.ocelet.model.dynpopculicoides.Masque;
 import fr.ocelet.model.dynpopculicoides.Ndvi;
+import fr.ocelet.runtime.ocltypes.KeyMap;
 import fr.ocelet.runtime.ocltypes.List;
 import fr.ocelet.runtime.raster.CellAggregOperator;
-import fr.ocelet.runtime.raster.Grid;
 import fr.ocelet.runtime.relation.DiCursorEdge;
 import fr.ocelet.runtime.relation.OcltRole;
 
@@ -14,12 +14,12 @@ public class MasqueNdvi_Edge extends DiCursorEdge {
   
   private Ndvi n;
   
-  public MasqueNdvi_Edge(final Grid grid1, final Grid grid2) {
-    super(grid1, grid2);
+  public MasqueNdvi_Edge(final List<Masque> ms, final List<Ndvi> ns) {
+    super(ms, ns);
     m = new Masque();
     n = new Ndvi();
-    m.updateCellInfo(getCellType());
-    n.updateCellInfo(getCellType());
+    m.getCell().setGrid(grid1);
+    n.getCell().setGrid(grid2);
               			 // e1 = new Masque();
     //e2 = new Ndvi();
     //e1.updateCellInfo(getCellType());
@@ -60,5 +60,10 @@ public class MasqueNdvi_Edge extends DiCursorEdge {
   
   public List<CellAggregOperator> get_agr_lisibiliteNDVI() {
     return null;
+  }
+  
+  public KeyMap<String, String> getEdgeProperties() {
+    KeyMap<String, String> properties = new KeyMap<String, String>();	
+    return properties;         	  	      		
   }
 }
