@@ -1,0 +1,10 @@
+output_merge_kib <- merge(Kibatiensis, sorties_modele_corr7, by="key")
+pred_kib <- output_merge_gra$prob_kib
+obs_kib <- output_merge_gra$presence
+id_kib <- as.character(output_merge_kib$key)
+rocmod_kib = data.frame(id_kib, obs_kib, pred_kib)
+library(PresenceAbsence)
+auc(rocmod_kib)
+threshold = seq(0, max(pred_kib), max(pred_kib)/1000)
+auc.roc.plot(rocmod_kib,threshold = threshold, xlab="1-Specificity",ylab="Sensitivity",main="Culicoides kibatiensis",add.legend=F)
+optimal.thresholds(rocmod_kib)
